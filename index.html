@@ -1,0 +1,2168 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>致伸集團 - 數位轉型辦公室儀表板</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.1" integrity="sha384-jb8JQMbMoBUzgWatfe6COACi2ljcDdZQ2OxczGA3bGNeWe+6DChMTBJemed7ZnvJ" crossorigin="anonymous"></script>
+    <style>
+        :root {
+            --bg: #f0f2f5;
+            --card: #ffffff;
+            --border: #e2e8f0;
+            --text: #1a202c;
+            --text-secondary: #64748b;
+            --primary: #3b82f6;
+            --primary-light: #60a5fa;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --info: #06b6d4;
+            --shadow: rgba(0, 0, 0, 0.1);
+            --shadow-lg: rgba(0, 0, 0, 0.15);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        html[data-theme="dark"] {
+            --bg: #0f172a;
+            --card: #1e293b;
+            --border: #334155;
+            --text: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --shadow: rgba(0, 0, 0, 0.3);
+            --shadow-lg: rgba(0, 0, 0, 0.5);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            height: 100%;
+            width: 100%;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            transition: var(--transition);
+            line-height: 1.6;
+        }
+
+        .container {
+            display: flex;
+            height: 100vh;
+            flex-direction: column;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, var(--primary) 0%, #2563eb 100%);
+            color: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 4px 12px var(--shadow-lg);
+            z-index: 100;
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .header-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .header-subtitle {
+            font-size: 0.875rem;
+            opacity: 0.9;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .theme-toggle {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            padding: 0.5rem 0.75rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1.25rem;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .theme-toggle:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Main Content */
+        .main {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .sidebar {
+            width: 240px;
+            background-color: var(--card);
+            border-right: 1px solid var(--border);
+            overflow-y: auto;
+            box-shadow: 2px 0 8px var(--shadow);
+        }
+
+        .sidebar-nav {
+            padding: 1rem 0;
+        }
+
+        .nav-item {
+            padding: 0.75rem 1.5rem;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 500;
+            border-left: 3px solid transparent;
+        }
+
+        .nav-item:hover {
+            background-color: var(--bg);
+            color: var(--text);
+        }
+
+        .nav-item.active {
+            background-color: var(--bg);
+            color: var(--primary);
+            border-left-color: var(--primary);
+        }
+
+        .content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 2rem;
+        }
+
+        .content-inner {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Tabs */
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Cards */
+        .card {
+            background-color: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 8px var(--shadow);
+            transition: var(--transition);
+        }
+
+        .card:hover {
+            box-shadow: 0 4px 16px var(--shadow-lg);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .card-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .card-body {
+            color: var(--text);
+        }
+
+        /* KPI Grid */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .kpi-card {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+
+        .kpi-card.secondary {
+            background: linear-gradient(135deg, #8b5cf6 0%, #a78bfa 100%);
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+        }
+
+        .kpi-card.success {
+            background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+
+        .kpi-card.warning {
+            background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+        }
+
+        .kpi-label {
+            font-size: 0.875rem;
+            opacity: 0.9;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .kpi-value {
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .kpi-change {
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+            opacity: 0.85;
+        }
+
+        /* Charts */
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 300px;
+        }
+
+        /* Projects Grid */
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .project-card {
+            border-left: 4px solid var(--primary);
+        }
+
+        .project-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .project-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .project-color-badge {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .project-stats {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border);
+            font-size: 0.875rem;
+        }
+
+        .project-stat-item {
+            text-align: center;
+        }
+
+        .project-stat-value {
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .project-stat-label {
+            color: var(--text-secondary);
+            font-size: 0.75rem;
+            margin-top: 0.25rem;
+        }
+
+        /* Badges & Status */
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .badge-success {
+            background-color: #d1fae5;
+            color: #065f46;
+        }
+
+        html[data-theme="dark"] .badge-success {
+            background-color: rgba(16, 185, 129, 0.2);
+            color: #86efac;
+        }
+
+        .badge-warning {
+            background-color: #fef3c7;
+            color: #92400e;
+        }
+
+        html[data-theme="dark"] .badge-warning {
+            background-color: rgba(245, 158, 11, 0.2);
+            color: #fcd34d;
+        }
+
+        .badge-danger {
+            background-color: #fee2e2;
+            color: #7f1d1d;
+        }
+
+        html[data-theme="dark"] .badge-danger {
+            background-color: rgba(239, 68, 68, 0.2);
+            color: #fca5a5;
+        }
+
+        .badge-info {
+            background-color: #e0f2fe;
+            color: #0c4a6e;
+        }
+
+        html[data-theme="dark"] .badge-info {
+            background-color: rgba(6, 182, 212, 0.2);
+            color: #67e8f9;
+        }
+
+        /* Progress Bar */
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background-color: var(--border);
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 0.5rem 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--primary-light));
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        /* Table */
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        th {
+            background-color: var(--bg);
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.875rem;
+            color: var(--text);
+            border-bottom: 2px solid var(--border);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        td {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid var(--border);
+            color: var(--text);
+        }
+
+        tr:hover {
+            background-color: var(--bg);
+        }
+
+        /* Filters & Controls */
+        .controls {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .filter-group {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .filter-label {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        select, input[type="text"], input[type="date"] {
+            background-color: var(--card);
+            color: var(--text);
+            border: 1px solid var(--border);
+            padding: 0.5rem 0.75rem;
+            border-radius: 4px;
+            font-size: 0.875rem;
+            transition: var(--transition);
+            font-family: inherit;
+        }
+
+        select:hover, input[type="text"]:hover, input[type="date"]:hover {
+            border-color: var(--primary);
+        }
+
+        select:focus, input[type="text"]:focus, input[type="date"]:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        /* Buttons */
+        button {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 4px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 0.875rem;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #2563eb;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+        }
+
+        .btn-secondary {
+            background-color: var(--text-secondary);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--text);
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            border: 1px solid var(--border);
+            color: var(--text);
+        }
+
+        .btn-outline:hover {
+            background-color: var(--bg);
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .btn-sm {
+            padding: 0.375rem 0.75rem;
+            font-size: 0.75rem;
+        }
+
+        .btn-icon {
+            padding: 0.5rem;
+            min-width: 40px;
+            min-height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+        }
+
+        /* Modal/Overlay Panel */
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 200;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .overlay.active {
+            display: block;
+        }
+
+        .modal-panel {
+            position: fixed;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            width: 400px;
+            background-color: var(--card);
+            box-shadow: -4px 0 16px var(--shadow-lg);
+            z-index: 201;
+            animation: slideIn 0.3s ease;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+            }
+            to {
+                transform: translateX(0);
+            }
+        }
+
+        .modal-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-secondary);
+        }
+
+        .modal-body {
+            flex: 1;
+            padding: 1.5rem;
+        }
+
+        .modal-footer {
+            padding: 1.5rem;
+            border-top: 1px solid var(--border);
+            display: flex;
+            gap: 1rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--text);
+            font-size: 0.875rem;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: inherit;
+            font-size: 0.875rem;
+            transition: var(--transition);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        textarea.form-control {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        /* Toast Notifications */
+        .toast-container {
+            position: fixed;
+            top: 2rem;
+            right: 2rem;
+            z-index: 300;
+            pointer-events: none;
+        }
+
+        .toast {
+            background-color: var(--card);
+            border-left: 4px solid var(--primary);
+            padding: 1rem 1.5rem;
+            margin-bottom: 1rem;
+            border-radius: 4px;
+            box-shadow: 0 4px 12px var(--shadow-lg);
+            animation: slideInRight 0.3s ease;
+            pointer-events: auto;
+            max-width: 350px;
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(100px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .toast.success {
+            border-left-color: var(--success);
+        }
+
+        .toast.warning {
+            border-left-color: var(--warning);
+        }
+
+        .toast.danger {
+            border-left-color: var(--danger);
+        }
+
+        .toast-close {
+            float: right;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--text-secondary);
+            font-size: 1.25rem;
+        }
+
+        /* Gantt Chart */
+        .gantt-container {
+            overflow-x: auto;
+            margin-top: 1.5rem;
+        }
+
+        .gantt-row {
+            display: flex;
+            margin-bottom: 1px;
+            background-color: var(--bg);
+        }
+
+        .gantt-label {
+            flex: 0 0 200px;
+            padding: 0.75rem;
+            background-color: var(--card);
+            border-right: 1px solid var(--border);
+            font-size: 0.875rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .gantt-timeline {
+            flex: 1;
+            position: relative;
+            height: 40px;
+            background-image:
+                repeating-linear-gradient(
+                    90deg,
+                    transparent,
+                    transparent 49px,
+                    var(--border) 49px,
+                    var(--border) 50px
+                );
+        }
+
+        .gantt-bar {
+            position: absolute;
+            height: 24px;
+            top: 8px;
+            background: linear-gradient(90deg, var(--primary), var(--primary-light));
+            border-radius: 3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            color: white;
+            font-weight: 600;
+            overflow: hidden;
+            white-space: nowrap;
+            padding: 0 2px;
+        }
+
+        /* Timeline View */
+        .timeline {
+            position: relative;
+            padding: 2rem 0;
+        }
+
+        .timeline-item {
+            display: flex;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .timeline-marker {
+            flex: 0 0 40px;
+            height: 40px;
+            background-color: var(--primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            position: relative;
+            z-index: 2;
+            box-shadow: 0 2px 8px var(--shadow);
+        }
+
+        .timeline-content {
+            flex: 1;
+            padding: 1rem 2rem;
+            background-color: var(--card);
+            border-radius: 8px;
+            margin-left: 2rem;
+            border-left: 2px solid var(--primary);
+        }
+
+        .timeline-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+        }
+
+        .timeline-date {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        /* Workload Analysis */
+        .workload-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .owner-card {
+            border-top: 3px solid var(--primary);
+        }
+
+        .owner-name {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+        }
+
+        .owner-role {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        .owner-projects {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .owner-project-tag {
+            background-color: var(--bg);
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        /* Agent Grid */
+        .agent-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .agent-card {
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: var(--transition);
+            background-color: var(--card);
+        }
+
+        .agent-card:hover {
+            border-color: var(--primary);
+            box-shadow: 0 4px 16px var(--shadow-lg);
+        }
+
+        .agent-avatar {
+            font-size: 2.5rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .agent-name {
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+            color: var(--text);
+        }
+
+        .agent-role {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        .agent-status {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+        }
+
+        .agent-status.active {
+            background-color: #d1fae5;
+            color: #065f46;
+        }
+
+        html[data-theme="dark"] .agent-status.active {
+            background-color: rgba(16, 185, 129, 0.2);
+            color: #86efac;
+        }
+
+        .agent-status.idle {
+            background-color: #fef3c7;
+            color: #92400e;
+        }
+
+        html[data-theme="dark"] .agent-status.idle {
+            background-color: rgba(245, 158, 11, 0.2);
+            color: #fcd34d;
+        }
+
+        .agent-assigned {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.75rem;
+        }
+
+        .agent-last-activity {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        .autonomy-badge {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            background-color: var(--primary);
+            color: white;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            margin-top: 0.75rem;
+        }
+
+        /* Activity Feed */
+        .activity-feed {
+            background-color: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            max-height: 500px;
+            overflow-y: auto;
+            padding: 1rem;
+        }
+
+        .activity-item {
+            padding: 1rem;
+            border-left: 3px solid var(--border);
+            margin-bottom: 0.75rem;
+            font-size: 0.875rem;
+            border-radius: 4px;
+            background-color: var(--bg);
+            transition: var(--transition);
+        }
+
+        .activity-item:hover {
+            border-left-color: var(--primary);
+            background-color: rgba(59, 130, 246, 0.05);
+        }
+
+        .activity-time {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.25rem;
+        }
+
+        .activity-message {
+            color: var(--text);
+        }
+
+        /* Workflow Builder */
+        .workflow-templates {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .workflow-template {
+            background-color: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: var(--transition);
+            text-align: center;
+        }
+
+        .workflow-template:hover {
+            border-color: var(--primary);
+            box-shadow: 0 4px 16px var(--shadow-lg);
+        }
+
+        .workflow-icon {
+            font-size: 2rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .workflow-name {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+        }
+
+        .workflow-description {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .main {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                height: auto;
+                border-right: none;
+                border-bottom: 1px solid var(--border);
+                max-height: 60px;
+                overflow-x: auto;
+                overflow-y: hidden;
+            }
+
+            .sidebar-nav {
+                display: flex;
+                overflow-x: auto;
+                padding: 0.5rem;
+                gap: 0.25rem;
+            }
+
+            .nav-item {
+                padding: 0.5rem 1rem;
+                white-space: nowrap;
+                border-left: none;
+                border-bottom: 2px solid transparent;
+            }
+
+            .nav-item.active {
+                border-left: none;
+                border-bottom-color: var(--primary);
+            }
+
+            .content {
+                padding: 1rem;
+            }
+
+            .kpi-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .projects-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .modal-panel {
+                width: 100%;
+            }
+
+            .header-content {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+
+            .header-right {
+                width: 100%;
+                justify-content: flex-end;
+            }
+
+            .controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            select, input[type="text"], input[type="date"] {
+                width: 100%;
+            }
+
+            .gantt-label {
+                flex: 0 0 150px;
+            }
+
+            .toast-container {
+                left: 1rem;
+                right: 1rem;
+                top: 1rem;
+            }
+
+            .toast {
+                max-width: 100%;
+            }
+        }
+
+        /* Print Styles */
+        @media print {
+            header, .sidebar, .controls, .btn-primary, .btn-secondary, .btn-outline {
+                display: none;
+            }
+
+            body {
+                background: white;
+            }
+
+            .card {
+                page-break-inside: avoid;
+                box-shadow: none;
+            }
+
+            .content {
+                padding: 0;
+            }
+        }
+
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--text-secondary);
+        }
+
+        /* Animations */
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.5;
+            }
+        }
+
+        .pulse {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+
+        /* Data Grid */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .data-table th {
+            background-color: var(--bg);
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            border-bottom: 2px solid var(--border);
+            font-size: 0.875rem;
+            color: var(--text);
+        }
+
+        .data-table td {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .data-table tr:hover {
+            background-color: var(--bg);
+        }
+
+        .data-table .cell-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-content">
+                <div class="header-left">
+                    <div>
+                        <div class="header-title">致伸集團 DTO</div>
+                        <div class="header-subtitle">數位轉型辦公室儀表板</div>
+                    </div>
+                </div>
+                <div class="header-right">
+                    <button class="theme-toggle" id="themeToggle" title="切換主題">
+                        <span id="themeIcon">☀️</span>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <div class="main">
+            <div class="sidebar">
+                <nav class="sidebar-nav">
+                    <div class="nav-item active" data-tab="overview">📊 總覽</div>
+                    <div class="nav-item" data-tab="projects">📋 項目詳情</div>
+                    <div class="nav-item" data-tab="timeline">📅 時程</div>
+                    <div class="nav-item" data-tab="owners">👥 負責人</div>
+                    <div class="nav-item" data-tab="actions">📝 全部Action Items</div>
+                    <div class="nav-item" data-tab="agents">🤖 AI 代理人</div>
+                    <div class="nav-item" data-tab="dependencies">🔗 依賴關係</div>
+                    <div class="nav-item" data-tab="data">⚙️ 資料管理</div>
+                </nav>
+            </div>
+
+            <div class="content">
+                <div class="content-inner">
+                    <!-- Overview Tab -->
+                    <div id="overview" class="tab-content active">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                            <h1 style="font-size: 1.875rem; font-weight: 700;">儀表板概況</h1>
+                            <div style="display: flex; gap: 1rem;">
+                                <button class="btn-outline btn-sm" onclick="exportJSON()">📥 匯出JSON</button>
+                                <button class="btn-outline btn-sm" onclick="importJSON()">📤 匯入JSON</button>
+                                <button class="btn-outline btn-sm" onclick="exportCSV()">📊 匯出CSV</button>
+                            </div>
+                        </div>
+
+                        <div class="kpi-grid">
+                            <div class="kpi-card">
+                                <div class="kpi-label">總項目數</div>
+                                <div class="kpi-value" id="totalProjects">7</div>
+                                <div class="kpi-change">完成進度 48%</div>
+                            </div>
+                            <div class="kpi-card secondary">
+                                <div class="kpi-label">Action Items</div>
+                                <div class="kpi-value" id="totalActions">53</div>
+                                <div class="kpi-change">本週完成 4 項</div>
+                            </div>
+                            <div class="kpi-card success">
+                                <div class="kpi-label">按時完成率</div>
+                                <div class="kpi-value" id="onTimeRate">92%</div>
+                                <div class="kpi-change">↑ 上升 2%</div>
+                            </div>
+                            <div class="kpi-card warning">
+                                <div class="kpi-label">風險項目</div>
+                                <div class="kpi-value" id="atRiskCount">2</div>
+                                <div class="kpi-change">需要關注</div>
+                            </div>
+                        </div>
+
+                        <div class="charts-grid">
+                            <div class="card">
+                                <div class="card-header">
+                                    <div class="card-title">項目進度分佈</div>
+                                </div>
+                                <div class="chart-container">
+                                    <canvas id="progressChart"></canvas>
+                                </div>
+                            </div>
+                            <div class="card">
+                                <div class="card-header">
+                                    <div class="card-title">各項目狀態</div>
+                                </div>
+                                <div class="chart-container">
+                                    <canvas id="statusChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="charts-grid">
+                            <div class="card">
+                                <div class="card-header">
+                                    <div class="card-title">負責人工作量分布</div>
+                                </div>
+                                <div class="chart-container">
+                                    <canvas id="workloadChart"></canvas>
+                                </div>
+                            </div>
+                            <div class="card">
+                                <div class="card-header">
+                                    <div class="card-title">月度完成趨勢</div>
+                                </div>
+                                <div class="chart-container">
+                                    <canvas id="trendChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Projects Tab -->
+                    <div id="projects" class="tab-content">
+                        <h1 style="font-size: 1.875rem; font-weight: 700; margin-bottom: 2rem;">項目詳情</h1>
+                        <div class="projects-grid" id="projectsGrid"></div>
+                    </div>
+
+                    <!-- Timeline Tab -->
+                    <div id="timeline" class="tab-content">
+                        <h1 style="font-size: 1.875rem; font-weight: 700; margin-bottom: 2rem;">專案時程 - Gantt圖表</h1>
+                        <div class="card">
+                            <div class="gantt-container" id="ganttChart"></div>
+                        </div>
+                    </div>
+
+                    <!-- Owners Tab -->
+                    <div id="owners" class="tab-content">
+                        <h1 style="font-size: 1.875rem; font-weight: 700; margin-bottom: 2rem;">負責人工作負荷</h1>
+                        <div class="workload-grid" id="ownersGrid"></div>
+                    </div>
+
+                    <!-- Actions Tab -->
+                    <div id="actions" class="tab-content">
+                        <h1 style="font-size: 1.875rem; font-weight: 700; margin-bottom: 2rem;">全部 Action Items</h1>
+                        <div class="controls">
+                            <div class="filter-group">
+                                <span class="filter-label">專案</span>
+                                <select id="projectFilter" onchange="filterActions()">
+                                    <option value="">全部</option>
+                                </select>
+                            </div>
+                            <div class="filter-group">
+                                <span class="filter-label">狀態</span>
+                                <select id="statusFilter" onchange="filterActions()">
+                                    <option value="">全部</option>
+                                    <option value="Not Started">未開始</option>
+                                    <option value="In Progress">進行中</option>
+                                    <option value="Completed">已完成</option>
+                                </select>
+                            </div>
+                            <div class="filter-group">
+                                <span class="filter-label">搜尋</span>
+                                <input type="text" id="searchInput" placeholder="搜尋 Action..." onkeyup="filterActions()">
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="table-wrapper">
+                                <table class="data-table" id="actionsTable">
+                                    <thead>
+                                        <tr>
+                                            <th>項目</th>
+                                            <th>Action Item</th>
+                                            <th>部門</th>
+                                            <th>負責人</th>
+                                            <th>時間</th>
+                                            <th>狀態</th>
+                                            <th>進度</th>
+                                            <th>動作</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="actionsTableBody"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Agents Tab -->
+                    <div id="agents" class="tab-content">
+                        <h1 style="font-size: 1.875rem; font-weight: 700; margin-bottom: 2rem;">🤖 AI 代理人 - 任務指揮中心</h1>
+
+                        <div class="card" style="margin-bottom: 2rem;">
+                            <div class="card-header">
+                                <div class="card-title">代理人小隊</div>
+                            </div>
+                            <div class="agent-grid" id="agentGrid"></div>
+                        </div>
+
+                        <div class="charts-grid">
+                            <div class="card">
+                                <div class="card-header">
+                                    <div class="card-title">即時活動日誌</div>
+                                </div>
+                                <div class="activity-feed" id="activityFeed"></div>
+                            </div>
+                            <div class="card">
+                                <div class="card-header">
+                                    <div class="card-title">工作流樣板</div>
+                                </div>
+                                <div class="workflow-templates" id="workflowTemplates"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Dependencies Tab -->
+                    <div id="dependencies" class="tab-content">
+                        <h1 style="font-size: 1.875rem; font-weight: 700; margin-bottom: 2rem;">依賴關係與關鍵路徑</h1>
+                        <div class="card">
+                            <div class="card-body">
+                                <div style="padding: 2rem; text-align: center; color: var(--text-secondary);">
+                                    <p>依賴關係圖表</p>
+                                    <p style="margin-top: 1rem; font-size: 0.875rem;">此功能在高級版本中可用</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Data Management Tab -->
+                    <div id="data" class="tab-content">
+                        <h1 style="font-size: 1.875rem; font-weight: 700; margin-bottom: 2rem;">⚙️ 資料管理</h1>
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="card-title">資料匯入/匯出</div>
+                            </div>
+                            <div class="card-body">
+                                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem;">
+                                    <div style="padding: 1.5rem; background-color: var(--bg); border-radius: 8px;">
+                                        <h3 style="margin-bottom: 0.5rem; font-weight: 600;">匯出 JSON</h3>
+                                        <p style="font-size: 0.875rem; color: var(--text-secondary); margin-bottom: 1rem;">完整的專案和 Action Items 資料</p>
+                                        <button class="btn-primary" onclick="exportJSON()">匯出</button>
+                                    </div>
+                                    <div style="padding: 1.5rem; background-color: var(--bg); border-radius: 8px;">
+                                        <h3 style="margin-bottom: 0.5rem; font-weight: 600;">匯入 JSON</h3>
+                                        <p style="font-size: 0.875rem; color: var(--text-secondary); margin-bottom: 1rem;">從檔案還原資料</p>
+                                        <button class="btn-primary" onclick="importJSON()">匯入</button>
+                                    </div>
+                                    <div style="padding: 1.5rem; background-color: var(--bg); border-radius: 8px;">
+                                        <h3 style="margin-bottom: 0.5rem; font-weight: 600;">匯出 CSV</h3>
+                                        <p style="font-size: 0.875rem; color: var(--text-secondary); margin-bottom: 1rem;">Action Items 表格格式</p>
+                                        <button class="btn-primary" onclick="exportCSV()">匯出</button>
+                                    </div>
+                                </div>
+
+                                <div style="margin-top: 2rem; padding: 1.5rem; background-color: var(--bg); border-radius: 8px; border-left: 4px solid var(--primary);">
+                                    <h3 style="margin-bottom: 1rem; font-weight: 600;">資料統計</h3>
+                                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem;">
+                                        <div>
+                                            <div style="font-size: 0.875rem; color: var(--text-secondary);">總專案數</div>
+                                            <div style="font-size: 1.5rem; font-weight: 700; margin-top: 0.25rem;" id="dataStatProjects">7</div>
+                                        </div>
+                                        <div>
+                                            <div style="font-size: 0.875rem; color: var(--text-secondary);">總 Action Items</div>
+                                            <div style="font-size: 1.5rem; font-weight: 700; margin-top: 0.25rem;" id="dataStatActions">53</div>
+                                        </div>
+                                        <div>
+                                            <div style="font-size: 0.875rem; color: var(--text-secondary);">負責人</div>
+                                            <div style="font-size: 1.5rem; font-weight: 700; margin-top: 0.25rem;" id="dataStatOwners">12</div>
+                                        </div>
+                                        <div>
+                                            <div style="font-size: 0.875rem; color: var(--text-secondary);">部門</div>
+                                            <div style="font-size: 1.5rem; font-weight: 700; margin-top: 0.25rem;" id="dataStatDepts">4</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Modal -->
+    <div class="overlay" id="editOverlay" onclick="closeEditPanel()"></div>
+    <div class="modal-panel" id="editPanel">
+        <div class="modal-header">
+            <h2 class="modal-title">編輯 Action Item</h2>
+            <button class="modal-close" onclick="closeEditPanel()">✕</button>
+        </div>
+        <div class="modal-body">
+            <form id="editForm">
+                <div class="form-group">
+                    <label class="form-label">專案</label>
+                    <input type="text" class="form-control" id="editProject" readonly>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Action Item</label>
+                    <textarea class="form-control" id="editAction" readonly></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">狀態</label>
+                    <select class="form-control" id="editStatus">
+                        <option value="Not Started">未開始</option>
+                        <option value="In Progress">進行中</option>
+                        <option value="Completed">已完成</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">進度 (%)</label>
+                    <input type="number" class="form-control" id="editProgress" min="0" max="100">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">備註</label>
+                    <textarea class="form-control" id="editNotes" placeholder="添加備註..."></textarea>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button class="btn-secondary" onclick="closeEditPanel()">取消</button>
+            <button class="btn-primary" onclick="saveEdit()">保存</button>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script>
+        // ============= DATA STRUCTURE =============
+        const projectsData = [
+            {
+                id: 1,
+                name: "成立數位轉型辦公室",
+                color: "#3b82f6",
+                status: "In Progress",
+                progress: 65,
+                startDate: "2026-01-01",
+                endDate: "2026-04-30",
+                team: "HR",
+                owner: "Vicky",
+                actions: [
+                    { title: "定義DTO的角色、組織R&R", dept: "HR", owner: "Vicky", period: "Jan-Feb", status: "Completed", progress: 100 },
+                    { title: "訂定年度預算、轉型主軸、專案審查流程、跨部門專案管理制度", dept: "HR", owner: "Vicky", period: "Jan-Mar", status: "In Progress", progress: 80 },
+                    { title: "如何衡量與設定DTO KPI", dept: "HR", owner: "Vicky", period: "Feb-Mar", status: "In Progress", progress: 60 },
+                    { title: "定義與外部單位合作模式", dept: "HR", owner: "Vicky", period: "Feb-Mar", status: "Not Started", progress: 0 },
+                    { title: "建立轉型進度追蹤與回報機制", dept: "HR", owner: "Vicky", period: "Feb-Apr", status: "Not Started", progress: 0 }
+                ]
+            },
+            {
+                id: 2,
+                name: "制定數位轉型策略藍圖",
+                color: "#8b5cf6",
+                status: "In Progress",
+                progress: 55,
+                startDate: "2026-01-01",
+                endDate: "2026-06-30",
+                team: "HR",
+                owner: "Vicky",
+                actions: [
+                    { title: "盤點全集團系統，整合來自各單位盤點完之流程與資料", dept: "HR", owner: "Vicky/Glen", period: "Jan-Mar", status: "In Progress", progress: 75 },
+                    { title: "各BU/Function訪談，確立各單位需求", dept: "HR", owner: "Vicky/Glen", period: "Feb-Apr", status: "In Progress", progress: 50 },
+                    { title: "訂定未來3年發展主軸(AI/資料平台/RPA/App)", dept: "HR", owner: "Vicky/Weiwu/Rico", period: "Mar-May", status: "Not Started", progress: 0 },
+                    { title: "建立集團級轉型KPI", dept: "HR", owner: "Vicky", period: "Apr-May", status: "Not Started", progress: 0 },
+                    { title: "產出2026-2028 Roadmap", dept: "HR", owner: "Vicky/Weiwu/Rico", period: "Apr-Jun", status: "Not Started", progress: 0 }
+                ]
+            },
+            {
+                id: 3,
+                name: "建立集團資料平台",
+                color: "#14b8a6",
+                status: "In Progress",
+                progress: 40,
+                startDate: "2026-01-01",
+                endDate: "2026-12-31",
+                team: "IT",
+                owner: "Rico",
+                actions: [
+                    { title: "建立集團資料標準(Metadata, Master Data)", dept: "IT", owner: "Rico/Porter", period: "Jan-Apr", status: "In Progress", progress: 45 },
+                    { title: "全集團系統清冊建立與品質檢查", dept: "IT", owner: "Rico/Porter", period: "Feb-Apr", status: "In Progress", progress: 30 },
+                    { title: "架構設計(資料湖/資料倉儲)", dept: "IT", owner: "Rico/Porter", period: "Mar-Jun", status: "Not Started", progress: 0 },
+                    { title: "建置API/ETL Data Pipeline", dept: "IT", owner: "Rico/Porter", period: "May-Sep", status: "Not Started", progress: 0 },
+                    { title: "建立各單位Data Mart", dept: "IT", owner: "Rico/Porter", period: "Aug-Nov", status: "Not Started", progress: 0 },
+                    { title: "建立Data Governance流程與敏感資料權限控管機制", dept: "IT", owner: "Rico/Porter", period: "Jun-Sep", status: "Not Started", progress: 0 },
+                    { title: "上線後持續維運與監控", dept: "IT", owner: "Rico/Porter", period: "Oct-Dec", status: "Not Started", progress: 0 }
+                ]
+            },
+            {
+                id: 4,
+                name: "AI試點計畫",
+                color: "#f97316",
+                status: "In Progress",
+                progress: 35,
+                startDate: "2026-01-01",
+                endDate: "2026-12-31",
+                team: "IT/HR",
+                owner: "Steven",
+                actions: [
+                    { title: "掌握各試點計畫進度與專案管理", dept: "IT/HR", owner: "Steven", period: "Jan-Dec", status: "In Progress", progress: 40 },
+                    { title: "選商作業(Chatbot)", dept: "IT", owner: "Porter", period: "Feb-Apr", status: "In Progress", progress: 70 },
+                    { title: "Chatbot POC", dept: "IT/HR/Legal/EPC", owner: "Porter", period: "Apr-Jun", status: "Not Started", progress: 0 },
+                    { title: "選擇Chatbot合作夥伴、方案確認與架構規劃", dept: "IT/合作單位(TBD)", owner: "Porter", period: "May-Jul", status: "Not Started", progress: 0 },
+                    { title: "Chatbot導入", dept: "IT/合作單位(TBD)", owner: "Porter", period: "Jul-Sep", status: "Not Started", progress: 0 },
+                    { title: "導入Profect AI", dept: "IT/杰倫/ISB", owner: "Fred", period: "May-Jul", status: "Not Started", progress: 0 },
+                    { title: "辦理Profect AI 小規模試點", dept: "IT/杰倫", owner: "Steven", period: "Jul-Oct", status: "Not Started", progress: 0 },
+                    { title: "推廣Chatbot與Profect AI到其他部門", dept: "IT/HR", owner: "Steven", period: "Sep-Dec", status: "Not Started", progress: 0 }
+                ]
+            },
+            {
+                id: 5,
+                name: "員工數位素養提升",
+                color: "#ec4899",
+                status: "In Progress",
+                progress: 45,
+                startDate: "2026-01-01",
+                endDate: "2026-12-31",
+                team: "HR",
+                owner: "Glen",
+                actions: [
+                    { title: "選擇合作夥伴，確認合作項目之內容", dept: "HR", owner: "Glen", period: "Jan-Mar", status: "In Progress", progress: 85 },
+                    { title: "制定培訓課程地圖(變革/文化/AI/Automation/數據思維/流程梳理)", dept: "HR/合作單位(TBD)", owner: "Glen", period: "Feb-Apr", status: "In Progress", progress: 60 },
+                    { title: "建立數位成熟度評估機制", dept: "HR/合作單位(TBD)", owner: "Glen", period: "Feb-Apr", status: "In Progress", progress: 40 },
+                    { title: "培訓課程規劃與安排(包含課程形式與梯次的確認)", dept: "HR/合作單位(TBD)", owner: "Glen", period: "Mar-May", status: "Not Started", progress: 0 },
+                    { title: "設計活動推動員工參與", dept: "HR/合作單位(TBD)", owner: "Glen", period: "Apr-Dec", status: "Not Started", progress: 0 },
+                    { title: "籌辦成果分享/發表會", dept: "HR/合作單位(TBD)", owner: "Glen", period: "Sep-Dec", status: "Not Started", progress: 0 },
+                    { title: "課程成效追蹤", dept: "HR/合作單位(TBD)", owner: "Glen", period: "May-Dec", status: "Not Started", progress: 0 }
+                ]
+            },
+            {
+                id: 6,
+                name: "建置統一入口平台(Group App)",
+                color: "#6366f1",
+                status: "Planning",
+                progress: 25,
+                startDate: "2026-01-01",
+                endDate: "2026-12-31",
+                team: "IT/HR",
+                owner: "Weiwu",
+                actions: [
+                    { title: "各單位需求訪談(for future function)", dept: "IT/合作單位(TBD)", owner: "Weiwu", period: "Jan-Mar", status: "In Progress", progress: 50 },
+                    { title: "HR需求功能規劃與確認範疇", dept: "HR", owner: "Eric", period: "Feb-Mar", status: "In Progress", progress: 55 },
+                    { title: "提出系統整合策略(API、環境架構、權限等)", dept: "IT/合作單位(TBD)", owner: "Weiwu", period: "Mar-Apr", status: "Not Started", progress: 0 },
+                    { title: "制定功能藍圖", dept: "IT/HR", owner: "Weiwu/Eric", period: "Mar-May", status: "Not Started", progress: 0 },
+                    { title: "撰寫RFP需求建議書", dept: "IT/HR", owner: "Weiwu/Eric", period: "Apr-May", status: "Not Started", progress: 0 },
+                    { title: "選商作業(請廠商提供報價與開發規劃)", dept: "IT/HR", owner: "Weiwu/Eric", period: "May-Jun", status: "Not Started", progress: 0 },
+                    { title: "系統整合與串接(此工作量最大)", dept: "IT/合作單位(TBD)", owner: "Weiwu", period: "Jun-Oct", status: "Not Started", progress: 0 },
+                    { title: "使用者體驗設計(UI/UX)", dept: "合作單位(TBD)", owner: "Weiwu", period: "Jun-Aug", status: "Not Started", progress: 0 },
+                    { title: "測試與訓練", dept: "IT/HR", owner: "Weiwu", period: "Sep-Oct", status: "Not Started", progress: 0 },
+                    { title: "Rollout 與維運", dept: "IT/合作單位(TBD)", owner: "Weiwu", period: "Oct-Dec", status: "Not Started", progress: 0 },
+                    { title: "整體專案管理與內外部協作", dept: "IT/HR", owner: "Weiwu/Eric", period: "Jan-Dec", status: "In Progress", progress: 20 }
+                ]
+            },
+            {
+                id: 7,
+                name: "建立經營管理看板(集團戰情中心)",
+                color: "#0ea5e9",
+                status: "Planning",
+                progress: 30,
+                startDate: "2026-03-01",
+                endDate: "2026-12-31",
+                team: "IT/HR",
+                owner: "Weiwu",
+                actions: [
+                    { title: "各單位BI/報表現況盤點", dept: "HR/各單位", owner: "Vicky/Weiwu", period: "Mar-May", status: "Not Started", progress: 0 },
+                    { title: "高階主管訪談與需求收斂", dept: "HR", owner: "Vicky/Weiwu", period: "Apr-Jun", status: "Not Started", progress: 0 },
+                    { title: "集團 KPI 確立（戰略指標）與決定檢視頻率", dept: "Executive Managers", owner: "Vicky/Weiwu", period: "May-Jul", status: "Not Started", progress: 0 },
+                    { title: "資料定義梳理與串接", dept: "IT/各單位", owner: "Weiwu", period: "Jun-Aug", status: "Not Started", progress: 0 },
+                    { title: "PowerBI 行動版/跨平台前端畫面設計、KPI分層設計", dept: "IT", owner: "Weiwu", period: "Jul-Sep", status: "Not Started", progress: 0 },
+                    { title: "看板權限管理規劃", dept: "IT/各單位", owner: "Weiwu", period: "Aug-Sep", status: "Not Started", progress: 0 },
+                    { title: "看板開發、指標資訊驗證與修正", dept: "IT/各單位", owner: "Weiwu", period: "Sep-Nov", status: "Not Started", progress: 0 },
+                    { title: "建置資料refresh排程", dept: "IT", owner: "Weiwu", period: "Oct-Nov", status: "Not Started", progress: 0 },
+                    { title: "系統上線與持續迭代", dept: "IT", owner: "Weiwu", period: "Nov-Dec", status: "Not Started", progress: 0 },
+                    { title: "整體專案管理與內外部協作", dept: "IT/HR", owner: "Vicky/Weiwu", period: "Mar-Dec", status: "Not Started", progress: 0 }
+                ]
+            }
+        ];
+
+        const agentsData = [
+            { name: "Jarvis", emoji: "🎯", role: "Lead Orchestrator", status: "active", autonomy: "Lead", projects: ["全部"], lastActivity: "2分鐘前" },
+            { name: "Analyst", emoji: "📊", role: "Data Specialist", status: "active", autonomy: "Specialist", projects: ["項目3", "項目7"], lastActivity: "5分鐘前" },
+            { name: "Tracker", emoji: "📋", role: "PM Specialist", status: "active", autonomy: "Specialist", projects: ["全部"], lastActivity: "1分鐘前" },
+            { name: "Sentinel", emoji: "🔔", role: "Risk Monitor", status: "idle", autonomy: "Specialist", projects: ["全部"], lastActivity: "30分鐘前" },
+            { name: "Scribe", emoji: "📝", role: "Documentation", status: "active", autonomy: "Intern", projects: ["項目1", "項目2"], lastActivity: "3分鐘前" },
+            { name: "Connector", emoji: "🔗", role: "Integration", status: "idle", autonomy: "Specialist", projects: ["項目3", "項目6"], lastActivity: "1小時前" }
+        ];
+
+        const activitiesData = [
+            { agent: "Tracker", message: "偵測到項目6 系統整合與串接 進度落後預期", time: "2分鐘前" },
+            { agent: "Analyst", message: "本週整體進度提升 3.2%，項目5表現最佳", time: "5分鐘前" },
+            { agent: "Sentinel", message: "⚠️ 項目6系統整合與串接 接近deadline，建議增加資源", time: "8分鐘前" },
+            { agent: "Scribe", message: "已產生本週進度報告，已保存至本地", time: "15分鐘前" },
+            { agent: "Jarvis", message: "日常站會已生成，參與人員已通知", time: "1小時前" }
+        ];
+
+        let currentEditingItem = null;
+
+        // ============= THEME MANAGEMENT =============
+        function initTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            applyTheme(savedTheme);
+        }
+
+        function applyTheme(theme) {
+            if (theme === 'system') {
+                const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                document.documentElement.setAttribute('data-theme', prefersDark ? 'dark' : 'light');
+            } else {
+                document.documentElement.setAttribute('data-theme', theme);
+            }
+            localStorage.setItem('theme', theme);
+            updateThemeIcon(theme);
+        }
+
+        function updateThemeIcon(theme) {
+            const icon = document.getElementById('themeIcon');
+            if (theme === 'light') icon.textContent = '☀️';
+            else if (theme === 'dark') icon.textContent = '🌙';
+            else icon.textContent = '⚙️';
+        }
+
+        document.getElementById('themeToggle').addEventListener('click', () => {
+            const current = localStorage.getItem('theme') || 'light';
+            const themes = ['light', 'dark', 'system'];
+            const next = themes[(themes.indexOf(current) + 1) % themes.length];
+            applyTheme(next);
+        });
+
+        // ============= TAB NAVIGATION =============
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', (e) => {
+                document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+                e.target.classList.add('active');
+
+                const tabName = e.target.getAttribute('data-tab');
+                document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+                document.getElementById(tabName).classList.add('active');
+
+                if (tabName === 'projects') renderProjects();
+                if (tabName === 'owners') renderOwners();
+                if (tabName === 'actions') renderActions();
+                if (tabName === 'timeline') renderGantt();
+                if (tabName === 'agents') renderAgents();
+            });
+        });
+
+        // ============= RENDERING FUNCTIONS =============
+        function renderProjects() {
+            const grid = document.getElementById('projectsGrid');
+            grid.innerHTML = projectsData.map(project => `
+                <div class="card project-card" style="border-left-color: ${project.color}">
+                    <div class="project-header">
+                        <div>
+                            <h3 class="project-title">${project.name}</h3>
+                        </div>
+                        <div class="project-color-badge" style="background-color: ${project.color}"></div>
+                    </div>
+                    <div style="margin-bottom: 1rem;">
+                        <div style="font-size: 0.875rem; color: var(--text-secondary); margin-bottom: 0.5rem;">進度 ${project.progress}%</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: ${project.progress}%"></div>
+                        </div>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin-bottom: 1rem; font-size: 0.875rem;">
+                        <div>
+                            <span style="color: var(--text-secondary);">狀態:</span>
+                            <span class="badge badge-${project.status === 'Completed' ? 'success' : project.status === 'In Progress' ? 'info' : 'warning'}">${project.status}</span>
+                        </div>
+                        <div>
+                            <span style="color: var(--text-secondary);">負責人:</span>
+                            <strong>${project.owner}</strong>
+                        </div>
+                    </div>
+                    <div class="project-stats">
+                        <div class="project-stat-item">
+                            <div class="project-stat-value">${project.actions.length}</div>
+                            <div class="project-stat-label">Actions</div>
+                        </div>
+                        <div class="project-stat-item">
+                            <div class="project-stat-value">${project.actions.filter(a => a.status === 'Completed').length}</div>
+                            <div class="project-stat-label">完成</div>
+                        </div>
+                        <div class="project-stat-item">
+                            <div class="project-stat-value">${project.startDate.split('-')[1]}</div>
+                            <div class="project-stat-label">開始月份</div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderOwners() {
+            const ownerMap = new Map();
+
+            projectsData.forEach(project => {
+                project.actions.forEach(action => {
+                    const owners = action.owner.split('/').map(o => o.trim());
+                    owners.forEach(owner => {
+                        if (!ownerMap.has(owner)) {
+                            ownerMap.set(owner, { name: owner, projects: new Set(), actions: 0 });
+                        }
+                        ownerMap.get(owner).projects.add(project.name);
+                        ownerMap.get(owner).actions++;
+                    });
+                });
+            });
+
+            const grid = document.getElementById('ownersGrid');
+            grid.innerHTML = Array.from(ownerMap.values()).map(owner => `
+                <div class="card owner-card">
+                    <div class="owner-name">${owner.name}</div>
+                    <div class="owner-projects">
+                        ${Array.from(owner.projects).slice(0, 3).map(p => `<span class="owner-project-tag">${p.substring(0, 20)}</span>`).join('')}
+                    </div>
+                    <div class="owner-role" style="margin-bottom: 1rem;">
+                        <strong>${owner.actions}</strong> 個 Action Items
+                    </div>
+                    <div style="padding-top: 1rem; border-top: 1px solid var(--border); font-size: 0.875rem; color: var(--text-secondary);">
+                        工作量: <strong>${Math.round(owner.actions / 53 * 100)}%</strong>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderActions() {
+            const allActions = [];
+            projectsData.forEach(project => {
+                project.actions.forEach(action => {
+                    allActions.push({ ...action, projectName: project.name, projectId: project.id });
+                });
+            });
+
+            const projectSelect = document.getElementById('projectFilter');
+            projectSelect.innerHTML = '<option value="">全部</option>' +
+                projectsData.map(p => `<option value="${p.id}">${p.name}</option>`).join('');
+
+            const tbody = document.getElementById('actionsTableBody');
+            const projectFilter = document.getElementById('projectFilter').value;
+            const statusFilter = document.getElementById('statusFilter').value;
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+
+            const filtered = allActions.filter(action => {
+                const projectMatch = !projectFilter || action.projectId == projectFilter;
+                const statusMatch = !statusFilter || action.status === statusFilter;
+                const searchMatch = !searchTerm || action.title.toLowerCase().includes(searchTerm) ||
+                                   action.owner.toLowerCase().includes(searchTerm);
+                return projectMatch && statusMatch && searchMatch;
+            });
+
+            tbody.innerHTML = filtered.map((action, idx) => `
+                <tr>
+                    <td><strong style="color: var(--primary)">${action.projectName}</strong></td>
+                    <td>${action.title}</td>
+                    <td>${action.dept}</td>
+                    <td>${action.owner}</td>
+                    <td><small>${action.period}</small></td>
+                    <td>
+                        <span class="badge badge-${action.status === 'Completed' ? 'success' : action.status === 'In Progress' ? 'info' : 'warning'}">
+                            ${action.status}
+                        </span>
+                    </td>
+                    <td>
+                        <div style="display: flex; align-items: center; gap: 0.5rem;">
+                            <div class="progress-bar" style="flex: 1; margin: 0;">
+                                <div class="progress-fill" style="width: ${action.progress}%"></div>
+                            </div>
+                            <span style="font-size: 0.75rem; min-width: 30px;">${action.progress}%</span>
+                        </div>
+                    </td>
+                    <td>
+                        <button class="btn-outline btn-sm" onclick="openEditPanel(${action.projectId}, ${idx})">編輯</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function renderGantt() {
+            const container = document.getElementById('ganttChart');
+            const startMonth = new Date(2026, 0, 1);
+            const endMonth = new Date(2026, 11, 31);
+            const months = [];
+            for (let d = new Date(startMonth); d <= endMonth; d.setMonth(d.getMonth() + 1)) {
+                months.push(new Date(d));
+            }
+
+            let html = '<div class="gantt-row" style="position: sticky; top: 0; z-index: 10;">';
+            html += '<div class="gantt-label" style="background-color: var(--bg); font-weight: 700;">專案</div>';
+            html += '<div class="gantt-timeline" style="background-color: var(--bg);">';
+            months.forEach((month, idx) => {
+                const monthName = ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'][month.getMonth()];
+                html += `<div style="position: absolute; left: ${idx * 50}px; top: 5px; font-size: 0.7rem; font-weight: 600; color: var(--text-secondary);">${monthName}</div>`;
+            });
+            html += '</div></div>';
+
+            projectsData.forEach(project => {
+                html += '<div class="gantt-row">';
+                html += `<div class="gantt-label">${project.name}</div>`;
+                html += '<div class="gantt-timeline">';
+
+                const startMonthNum = parseInt(project.startDate.split('-')[1]);
+                const endMonthNum = parseInt(project.endDate.split('-')[1]);
+                const duration = endMonthNum - startMonthNum + 1;
+
+                html += `<div class="gantt-bar" style="left: ${(startMonthNum - 1) * 50}px; width: ${duration * 50}px; background: linear-gradient(90deg, ${project.color}, ${project.color}88);">
+                    ${project.progress}%
+                </div>`;
+
+                html += '</div></div>';
+            });
+
+            container.innerHTML = html;
+        }
+
+        function renderAgents() {
+            const grid = document.getElementById('agentGrid');
+            grid.innerHTML = agentsData.map(agent => `
+                <div class="agent-card">
+                    <div class="agent-avatar">${agent.emoji}</div>
+                    <div class="agent-name">${agent.name}</div>
+                    <div class="agent-role">${agent.role}</div>
+                    <div class="agent-status ${agent.status}">${agent.status === 'active' ? '🟢 Active' : '🟡 Idle'}</div>
+                    <div class="agent-assigned">
+                        <small><strong>專案:</strong> ${agent.projects.join(', ')}</small>
+                    </div>
+                    <div class="agent-last-activity">
+                        <small><strong>最後:</strong> ${agent.lastActivity}</small>
+                    </div>
+                    <div class="autonomy-badge">${agent.autonomy}</div>
+                </div>
+            `).join('');
+
+            const feed = document.getElementById('activityFeed');
+            feed.innerHTML = activitiesData.map(activity => `
+                <div class="activity-item">
+                    <div class="activity-time">${activity.time}</div>
+                    <div class="activity-message"><strong>[${activity.agent}]</strong> ${activity.message}</div>
+                </div>
+            `).join('');
+
+            const templates = document.getElementById('workflowTemplates');
+            templates.innerHTML = `
+                <div class="workflow-template" onclick="showToast('工作流: 週報告', 'success')">
+                    <div class="workflow-icon">📊</div>
+                    <div class="workflow-name">週報告</div>
+                    <div class="workflow-description">自動生成週進度報告</div>
+                </div>
+                <div class="workflow-template" onclick="showToast('工作流: 風險警報', 'success')">
+                    <div class="workflow-icon">🚨</div>
+                    <div class="workflow-name">風險警報</div>
+                    <div class="workflow-description">檢測延遲項目並通知</div>
+                </div>
+                <div class="workflow-template" onclick="showToast('工作流: 進度更新', 'success')">
+                    <div class="workflow-icon">📈</div>
+                    <div class="workflow-name">進度更新</div>
+                    <div class="workflow-description">收集並彙總進度信息</div>
+                </div>
+            `;
+        }
+
+        function filterActions() {
+            renderActions();
+        }
+
+        // ============= EDIT PANEL =============
+        function openEditPanel(projectId, actionIndex) {
+            const project = projectsData.find(p => p.id === projectId);
+            const action = project.actions[actionIndex];
+            currentEditingItem = { projectId, actionIndex };
+
+            document.getElementById('editProject').value = project.name;
+            document.getElementById('editAction').value = action.title;
+            document.getElementById('editStatus').value = action.status;
+            document.getElementById('editProgress').value = action.progress;
+            document.getElementById('editNotes').value = '';
+
+            document.getElementById('editOverlay').classList.add('active');
+            document.getElementById('editPanel').classList.add('active');
+        }
+
+        function closeEditPanel() {
+            document.getElementById('editOverlay').classList.remove('active');
+            document.getElementById('editPanel').classList.remove('active');
+            currentEditingItem = null;
+        }
+
+        function saveEdit() {
+            if (!currentEditingItem) return;
+
+            const project = projectsData.find(p => p.id === currentEditingItem.projectId);
+            const action = project.actions[currentEditingItem.actionIndex];
+
+            action.status = document.getElementById('editStatus').value;
+            action.progress = parseInt(document.getElementById('editProgress').value);
+
+            showToast('Action Item 已更新', 'success');
+            closeEditPanel();
+            renderActions();
+        }
+
+        // ============= CHARTS =============
+        function initCharts() {
+            const ctx1 = document.getElementById('progressChart')?.getContext('2d');
+            if (ctx1) {
+                new Chart(ctx1, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['已完成', '進行中', '未開始'],
+                        datasets: [{
+                            data: [15, 28, 10],
+                            backgroundColor: ['#10b981', '#3b82f6', '#f59e0b']
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { position: 'bottom' } }
+                    }
+                });
+            }
+
+            const ctx2 = document.getElementById('statusChart')?.getContext('2d');
+            if (ctx2) {
+                new Chart(ctx2, {
+                    type: 'bar',
+                    data: {
+                        labels: projectsData.map(p => p.name.substring(0, 15)),
+                        datasets: [{
+                            label: '進度 %',
+                            data: projectsData.map(p => p.progress),
+                            backgroundColor: projectsData.map(p => p.color)
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        indexAxis: 'y',
+                        plugins: { legend: { display: false } }
+                    }
+                });
+            }
+
+            const ctx3 = document.getElementById('workloadChart')?.getContext('2d');
+            if (ctx3) {
+                const ownerMap = new Map();
+                projectsData.forEach(project => {
+                    project.actions.forEach(action => {
+                        const owners = action.owner.split('/').map(o => o.trim());
+                        owners.forEach(owner => {
+                            ownerMap.set(owner, (ownerMap.get(owner) || 0) + 1);
+                        });
+                    });
+                });
+
+                const topOwners = Array.from(ownerMap.entries())
+                    .sort((a, b) => b[1] - a[1])
+                    .slice(0, 8);
+
+                new Chart(ctx3, {
+                    type: 'bar',
+                    data: {
+                        labels: topOwners.map(o => o[0]),
+                        datasets: [{
+                            label: 'Action Items 數',
+                            data: topOwners.map(o => o[1]),
+                            backgroundColor: '#8b5cf6'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false } }
+                    }
+                });
+            }
+
+            const ctx4 = document.getElementById('trendChart')?.getContext('2d');
+            if (ctx4) {
+                new Chart(ctx4, {
+                    type: 'line',
+                    data: {
+                        labels: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
+                        datasets: [{
+                            label: '完成項目數',
+                            data: [0, 2, 5, 8, 12, 15, 18, 22, 26, 30, 35, 40],
+                            borderColor: '#10b981',
+                            backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                            tension: 0.4,
+                            fill: true
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false } }
+                    }
+                });
+            }
+        }
+
+        // ============= EXPORT/IMPORT =============
+        function exportJSON() {
+            const data = { projects: projectsData, exportDate: new Date().toISOString() };
+            const json = JSON.stringify(data, null, 2);
+            const blob = new Blob([json], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `dto-dashboard-${new Date().toISOString().split('T')[0]}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+            showToast('JSON 已匯出', 'success');
+        }
+
+        function importJSON() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            input.onchange = (e) => {
+                const file = e.target.files[0];
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    try {
+                        const data = JSON.parse(event.target.result);
+                        projectsData.length = 0;
+                        projectsData.push(...data.projects);
+                        showToast('資料已匯入', 'success');
+                        location.reload();
+                    } catch (err) {
+                        showToast('匯入失敗: ' + err.message, 'danger');
+                    }
+                };
+                reader.readAsText(file);
+            };
+            input.click();
+        }
+
+        function exportCSV() {
+            let csv = 'Project,Action Item,Department,Owner,Period,Status,Progress\n';
+            projectsData.forEach(project => {
+                project.actions.forEach(action => {
+                    csv += `"${project.name}","${action.title}","${action.dept}","${action.owner}","${action.period}","${action.status}",${action.progress}\n`;
+                });
+            });
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `dto-actions-${new Date().toISOString().split('T')[0]}.csv`;
+            a.click();
+            URL.revokeObjectURL(url);
+            showToast('CSV 已匯出', 'success');
+        }
+
+        // ============= TOAST NOTIFICATIONS =============
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.innerHTML = `
+                ${message}
+                <button class="toast-close" onclick="this.parentElement.remove()">✕</button>
+            `;
+            container.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+
+        // ============= INITIALIZATION =============
+        document.addEventListener('DOMContentLoaded', () => {
+            initTheme();
+            renderProjects();
+            renderOwners();
+            renderActions();
+            renderAgents();
+            initCharts();
+
+            // Overlay click to close
+            document.getElementById('editOverlay').addEventListener('click', closeEditPanel);
+
+            // Update data stats
+            document.getElementById('dataStatProjects').textContent = projectsData.length;
+            document.getElementById('dataStatActions').textContent = projectsData.reduce((sum, p) => sum + p.actions.length, 0);
+
+            const ownerSet = new Set();
+            const deptSet = new Set();
+            projectsData.forEach(p => {
+                p.actions.forEach(a => {
+                    a.owner.split('/').forEach(o => ownerSet.add(o.trim()));
+                    deptSet.add(a.dept);
+                });
+            });
+            document.getElementById('dataStatOwners').textContent = ownerSet.size;
+            document.getElementById('dataStatDepts').textContent = deptSet.size;
+        });
+
+        // Allow re-render when switching tabs
+        window.addEventListener('beforeunload', () => {
+            localStorage.setItem('dtoData', JSON.stringify(projectsData));
+        });
+    </script>
+</body>
+</html>

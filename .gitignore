@@ -1,0 +1,21 @@
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor files
+*.swp
+*.swo
+*~
+.vscode/
+.idea/
+
+# Data exports (user-specific)
+dto_dashboard_*.json
+dto_action_items_*.csv
+
+# Node modules (future use)
+node_modules/
+
+# Environment files
+.env
+.env.local
