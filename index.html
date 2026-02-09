@@ -8,6 +8,8 @@
 
   <!-- Chart.js CDN -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <!-- Supabase JS SDK -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 
   <style>
     /* ============================= */
@@ -1277,325 +1279,1908 @@
         padding: 8px 12px;
       }
     }
-  
-    /* Additional view elements and components */
-    .workflow-card {
-      background-color: var(--bg-secondary);
+
+    /* ============================================ */
+    /* COMPREHENSIVE COMPONENT CSS - ALL VIEWS      */
+    /* ============================================ */
+
+    /* === VIEW CONTAINERS === */
+    .view-overview,
+    .view-projects-list,
+    .view-project-detail,
+    .view-action-detail,
+    .view-timeline,
+    .view-agents,
+    .view-team,
+    .view-team-member,
+    .view-all-actions,
+    .view-settings,
+    .agent-squad-container,
+    .agent-detail-container,
+    .workflows-container,
+    .activity-container {
+      max-width: 1400px;
+      width: 100%;
+    }
+
+    /* === VIEW HEADER === */
+    .view-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .view-header h2 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin: 0;
+    }
+
+    /* === SECTION HEADER (Agent pages) === */
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .section-header h2 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin: 0;
+    }
+    .subtitle {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    /* === BREADCRUMB === */
+    .breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+    }
+    .bc-current {
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+
+    /* === DETAIL HEADER === */
+    .detail-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .detail-header h2 {
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin: 0;
+    }
+
+    /* === STAT GRID (Overview) === */
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    /* === STAT CARD === */
+    .stat-card {
+      background: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      box-shadow: var(--card-shadow);
+    }
+    .stat-icon {
+      font-size: 1.8rem;
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 12px;
+      background: var(--accent-light);
+      flex-shrink: 0;
+    }
+    .stat-content {
+      flex: 1;
+      min-width: 0;
+    }
+    .stat-label {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-weight: 500;
+    }
+    .stat-value {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      line-height: 1.2;
+    }
+
+    /* === STATS GRID (Agent Squad) === */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    /* === STATS ROW (Detail pages mini stats) === */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .stat-mini {
+      text-align: center;
+      padding: 12px 8px;
+      border-radius: 8px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+    }
+
+    /* === STAT BOX (Agent metrics tab) === */
+    .stat-box {
+      text-align: center;
+      padding: 16px 12px;
+      border-radius: 10px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+    }
+    .stat-num {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--accent);
+      line-height: 1.2;
+    }
+    .stat-lbl {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    /* === SUMMARY STATS (Activity page) === */
+    .summary-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    /* === CHART GRID (Overview) - CRITICAL: Fixed heights === */
+    .chart-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+      margin-bottom: 24px;
+    }
+    .chart-grid .card {
+      min-height: 0;
+      overflow: hidden;
+    }
+    .chart-grid .card canvas {
+      width: 100% !important;
+      max-height: 280px !important;
+    }
+
+    /* === CHART CONTAINER (Agent metrics tab) === */
+    .chart-container {
+      position: relative;
+      width: 100%;
+      height: 250px;
+      max-height: 300px;
+    }
+    .chart-container canvas {
+      width: 100% !important;
+      height: 100% !important;
+    }
+
+    /* === CARD === */
+    .card {
+      background: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: var(--card-shadow);
+      margin-bottom: 0;
+    }
+    .card h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 16px;
+      color: var(--text-primary);
+    }
+
+    /* === CARD GRID === */
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    /* === CARD ACTIONS === */
+    .card-actions {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+    .card-footer {
+      padding: 12px 20px;
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+    .card-status-indicator {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+
+    /* === AGENT CARD (Squad view) === */
+    .agent-card {
+      position: relative;
+      background: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 20px;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: var(--card-shadow);
+    }
+    .agent-card:hover {
+      box-shadow: var(--card-shadow-hover);
+      transform: translateY(-2px);
+    }
+    .agent-card-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .agent-emoji {
+      font-size: 2rem;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+    .agent-info {
+      flex: 1;
+      min-width: 0;
+    }
+    .agent-info h3 {
+      margin: 0 0 4px 0;
+      font-size: 1rem;
+      font-weight: 600;
+    }
+    .agent-info p {
+      margin: 0;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    /* === AGENT STATUS BADGES === */
+    .agent-status {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+    .agent-status.active { background: #dcfce7; color: #16a34a; }
+    .agent-status.idle { background: #fef3c7; color: #d97706; }
+    .agent-status.paused { background: var(--bg-secondary); color: var(--text-muted); }
+    .agent-status.error { background: #fee2e2; color: #dc2626; }
+    [data-theme="dark"] .agent-status.active { background: #14532d; color: #4ade80; }
+    [data-theme="dark"] .agent-status.idle { background: #451a03; color: #fbbf24; }
+    [data-theme="dark"] .agent-status.error { background: #450a0a; color: #f87171; }
+
+    /* === AGENT TABLE === */
+    .agent-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    .agent-table thead {
+      background: var(--bg-secondary, #f8fafc);
+      border-bottom: 2px solid var(--border-color, #e2e8f0);
+    }
+    .agent-table th {
+      padding: 10px 12px;
+      text-align: left;
+      font-weight: 600;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-secondary, #64748b);
+      white-space: nowrap;
+    }
+    .agent-table td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border-color, #e2e8f0);
+      vertical-align: middle;
+    }
+    .agent-table .agent-row:hover {
+      background: var(--bg-secondary, #f8fafc);
+    }
+    .agent-table .agent-row:last-child td {
+      border-bottom: none;
+    }
+    [data-theme="dark"] .agent-table thead {
+      background: #1e293b;
+    }
+    [data-theme="dark"] .agent-table .agent-row:hover {
+      background: #1e293b;
+    }
+
+    /* === BADGE SYSTEM === */
+    .badge {
+      display: inline-block;
+      padding: 2px 10px;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    .badge-group {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-bottom: 8px;
+    }
+    .badge-autonomy {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-size: 0.7rem;
+      font-weight: 500;
+      background: var(--accent-light);
+      color: var(--accent);
+    }
+    .badge-secondary {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-size: 0.75rem;
+      background: var(--bg-secondary);
+      color: var(--text-muted);
+      border: 1px solid var(--border-color);
+    }
+    .type-badge {
+      display: inline-block;
+      padding: 1px 8px;
+      border-radius: 10px;
+      font-size: 0.7rem;
+      font-weight: 500;
+      background: var(--bg-tertiary);
+      color: var(--text-secondary);
+    }
+    .priority-badge {
+      display: inline-block;
+      padding: 1px 8px;
+      border-radius: 10px;
+      font-size: 0.7rem;
+      font-weight: 500;
+    }
+
+    /* === LLM INDICATOR === */
+    .llm-indicator {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+
+    /* === PROJECTS TAGS (Agent card) === */
+    .projects-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      margin-bottom: 8px;
+    }
+
+    /* === METRICS ROW (Agent card) === */
+    .metrics-row {
+      display: flex;
+      gap: 12px;
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+    }
+
+    /* === LAST ACTIVITY (Agent card) === */
+    .last-activity {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 8px;
+    }
+
+    /* === QUICK ACTIONS BAR (Agent Squad) === */
+    .quick-actions-bar {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+
+    /* === ACTIVITY FEED SECTION === */
+    .activity-feed-section {
+      margin-top: 24px;
+    }
+    .feed-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .feed-header h3 {
+      margin: 0;
+      font-size: 1rem;
+      font-weight: 600;
+    }
+    .feed-nav {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+    .feed-link {
+      color: var(--accent);
+      text-decoration: none;
+      cursor: pointer;
+      font-size: 0.85rem;
+    }
+    .feed-link:hover {
+      text-decoration: underline;
+    }
+    .divider {
+      color: var(--text-muted);
+      font-size: 0.8rem;
+    }
+
+    /* === ACTIVITY LIST & ITEMS === */
+    .activity-list {
+      display: flex;
+      flex-direction: column;
+    }
+    .activity-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border-color);
+      font-size: 0.85rem;
+    }
+    .activity-item:last-child {
+      border-bottom: none;
+    }
+    .activity-entry {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border-color);
+      font-size: 0.85rem;
+    }
+    .activity-entry:last-child {
+      border-bottom: none;
+    }
+    .time {
+      white-space: nowrap;
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      min-width: 48px;
+      flex-shrink: 0;
+    }
+    .agent {
+      font-weight: 600;
+      color: var(--text-primary);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .message {
+      flex: 1;
+      color: var(--text-secondary);
+      min-width: 0;
+      word-break: break-word;
+    }
+
+    /* === ACTIVITY TIMELINE FULL (Activity page) === */
+    .activity-timeline-full {
+      background: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .date-group {
+      border-bottom: 1px solid var(--border-color);
+    }
+    .date-group:last-child {
+      border-bottom: none;
+    }
+    .date-header {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      padding: 12px 16px;
+      background: var(--bg-secondary);
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    /* === ACTIVITY FILTERS === */
+    .activity-filters {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+
+    /* === ACTIVITY TAB === */
+    .activity-tab {
+      padding: 0;
+    }
+
+    /* === FILTER ROW === */
+    .filter-row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+      align-items: center;
+    }
+
+    /* === FILTER BAR === */
+    .filter-bar {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+      align-items: center;
+    }
+
+    /* === CONTROLS ROW === */
+    .controls-row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+      align-items: center;
+    }
+
+    /* === LINKS === */
+    .link {
+      color: var(--accent);
+      text-decoration: none;
+      cursor: pointer;
+    }
+    .link:hover {
+      text-decoration: underline;
+    }
+    .bc-link {
+      color: var(--accent);
+      text-decoration: none;
+      cursor: pointer;
+    }
+    .bc-link:hover {
+      text-decoration: underline;
+    }
+    .bc-sep {
+      margin: 0 6px;
+      color: var(--text-muted);
+    }
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--accent);
+      text-decoration: none;
+      cursor: pointer;
+      font-size: 0.9rem;
+      margin-bottom: 16px;
+    }
+    .back-link:hover {
+      text-decoration: underline;
+    }
+
+    /* === AGENT DETAIL CONTAINER === */
+    .agent-identity-section {
+      background: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 20px;
+      box-shadow: var(--card-shadow);
+    }
+    .identity-header {
+      display: flex;
+      gap: 20px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    .emoji-name {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-shrink: 0;
+    }
+    .emoji-input {
+      font-size: 2rem;
+      width: 60px;
+      text-align: center;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 4px;
+      background: var(--bg-secondary);
+    }
+    .name-input {
+      font-size: 1.2rem;
+      font-weight: 600;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 8px 12px;
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      min-width: 180px;
+    }
+    .role-description {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      min-width: 200px;
+    }
+    .role-input {
+      font-size: 0.9rem;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 8px 12px;
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+    }
+    .description-input {
+      font-size: 0.85rem;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 8px 12px;
+      background: var(--bg-secondary);
+      color: var(--text-secondary);
+      resize: vertical;
+      min-height: 60px;
+      font-family: inherit;
+    }
+
+    /* === CONTROLS GRID (Agent detail) === */
+    .controls-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+    .control-group {
+      margin-bottom: 0;
+    }
+    .control-group label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 6px;
+    }
+
+    /* === STATUS BUTTONS (Agent detail) === */
+    .status-buttons {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .btn-toggle {
+      padding: 6px 14px;
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      background: var(--bg-secondary);
+      color: var(--text-secondary);
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-toggle:hover {
+      border-color: var(--accent);
+    }
+    .btn-toggle.active {
+      background: var(--accent);
+      color: white;
+      border-color: var(--accent);
+    }
+
+    /* === AUTONOMY SELECTOR === */
+    .autonomy-selector {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .autonomy-selector label {
+      text-transform: none !important;
+      font-weight: 400 !important;
+    }
+
+    /* === SCHEDULE DISPLAY === */
+    .schedule-display {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      padding: 8px 12px;
+      background: var(--bg-secondary);
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+    }
+    .tz {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-left: 4px;
+    }
+
+    /* === PROJECTS CHECKBOXES === */
+    .projects-checkboxes {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .checkbox-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.85rem;
+      cursor: pointer;
+    }
+
+    /* === LLM CONFIG SECTION === */
+    .llm-config-section {
+      background: var(--bg-secondary);
       border: 1px solid var(--border-color);
       border-radius: 8px;
       padding: 16px;
       margin-bottom: 16px;
-      transition: all 0.2s ease;
     }
-
-    .workflow-card:hover {
-      box-shadow: var(--card-shadow-hover);
-    }
-
-    .workflow-step {
-      display: flex;
-      align-items: center;
+    .llm-config-section h4 {
+      font-size: 0.9rem;
       margin-bottom: 12px;
-      padding: 12px;
-      background-color: var(--bg-tertiary);
-      border-radius: 6px;
     }
-
-    .workflow-step.active {
-      background-color: var(--accent-light);
-      border-left: 4px solid var(--accent);
-    }
-
-    .agent-card {
-      background-color: var(--bg-secondary);
-      border: 1px solid var(--border-color);
-      border-radius: 8px;
-      padding: 20px;
-      text-align: center;
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-
-    .agent-card:hover {
-      transform: translateY(-4px);
-      box-shadow: var(--card-shadow-hover);
-    }
-
-    .agent-status-badge {
-      display: inline-block;
-      padding: 6px 12px;
-      border-radius: 20px;
-      font-size: 12px;
-      font-weight: 600;
+    .note {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      font-style: italic;
       margin-top: 8px;
     }
 
-    .agent-status-badge.active {
-      background-color: rgba(34, 197, 94, 0.2);
-      color: var(--success);
-    }
-
-    .agent-status-badge.idle {
-      background-color: rgba(148, 163, 184, 0.2);
-      color: var(--text-secondary);
-    }
-
-    .activity-timeline {
-      position: relative;
-      padding-left: 30px;
-    }
-
-    .activity-timeline::before {
-      content: '';
-      position: absolute;
-      left: 0;
-      top: 0;
-      bottom: 0;
-      width: 2px;
-      background-color: var(--border-color);
-    }
-
-    .activity-item {
-      position: relative;
-      margin-bottom: 20px;
-      padding-bottom: 20px;
-    }
-
-    .activity-item::before {
-      content: '';
-      position: absolute;
-      left: -38px;
-      top: 0;
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-      background-color: var(--accent);
-      border: 3px solid var(--bg-primary);
-    }
-
-    .gantt-chart {
-      width: 100%;
-      overflow-x: auto;
-      margin-top: 20px;
-    }
-
-    .gantt-row {
+    /* === ACTION BUTTONS === */
+    .action-buttons {
       display: flex;
-      align-items: center;
-      padding: 12px 0;
-      border-bottom: 1px solid var(--border-color);
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 16px;
     }
 
-    .gantt-label {
-      width: 200px;
-      flex-shrink: 0;
+    /* === TABS (Agent detail) === */
+    .tabs-container {
+      background: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
       overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
+      box-shadow: var(--card-shadow);
     }
-
-    .gantt-bar {
-      flex-grow: 1;
-      position: relative;
-      height: 30px;
-      background-color: var(--bg-tertiary);
-      border-radius: 4px;
-      overflow: hidden;
-    }
-
-    .gantt-progress {
-      height: 100%;
-      background: linear-gradient(90deg, var(--accent), var(--accent-hover));
-      border-radius: 4px;
-      transition: width 0.3s ease;
-    }
-
-    .status-indicator {
-      display: inline-block;
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      margin-right: 8px;
-    }
-
-    .status-indicator.pending {
-      background-color: var(--warning);
-    }
-
-    .status-indicator.in-progress {
-      background-color: var(--info);
-    }
-
-    .status-indicator.completed {
-      background-color: var(--success);
-    }
-
-    .status-indicator.blocked {
-      background-color: var(--danger);
-    }
-
-    /* Tab system */
-    .tabs {
+    .tab-nav {
       display: flex;
       border-bottom: 2px solid var(--border-color);
-      margin-bottom: 20px;
-      gap: 0;
+      background: var(--bg-secondary);
     }
-
-    .tab {
+    .tab-btn {
       padding: 12px 20px;
+      border: none;
+      background: transparent;
       cursor: pointer;
-      color: var(--text-secondary);
-      border-bottom: 3px solid transparent;
-      transition: all 0.2s ease;
+      font-size: 0.85rem;
       font-weight: 500;
+      color: var(--text-muted);
+      border-bottom: 2px solid transparent;
+      margin-bottom: -2px;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+    .tab-btn:hover {
+      color: var(--text-primary);
+      background: var(--bg-primary);
+    }
+    .tab-btn.active {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+      background: var(--bg-primary);
+    }
+    .tab-content {
+      padding: 20px;
     }
 
-    .tab:hover {
+    /* === DETAIL TABS (Project detail) === */
+    .detail-tabs {
+      display: flex;
+      border-bottom: 2px solid var(--border-color);
+      margin-bottom: 16px;
+    }
+    .detail-tab-btn {
+      padding: 10px 20px;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      border-bottom: 2px solid transparent;
+      margin-bottom: -2px;
+      transition: all 0.2s;
+    }
+    .detail-tab-btn:hover {
+      color: var(--text-primary);
+    }
+    .detail-tab-btn.active {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+    }
+
+    /* === TASK QUEUE TAB === */
+    .task-queue-tab {
+      padding: 0;
+    }
+    .task-section {
+      margin-bottom: 16px;
+    }
+    .task-section h4 {
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .task-section.collapsible h4 {
+      cursor: pointer;
+    }
+    .task-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .task-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 14px;
+      background: var(--bg-secondary);
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+      font-size: 0.85rem;
+      gap: 10px;
+    }
+    .task-item .task-name {
+      flex: 1;
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+    .task-item .task-meta {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+    .due-date {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      white-space: nowrap;
+    }
+    .add-task-form {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+    }
+    .add-task-form input {
+      flex: 1;
+      padding: 8px 12px;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      font-size: 0.85rem;
+      background: var(--bg-secondary);
       color: var(--text-primary);
     }
 
+    /* === METRICS TAB === */
+    .metrics-tab {
+      padding: 0;
+    }
+
+    /* === WORKFLOW CARD === */
+    .workflow-card {
+      background: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: var(--card-shadow);
+    }
+    .workflow-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .workflow-header h3 {
+      margin: 0;
+      font-size: 1rem;
+    }
+    .description {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      margin-bottom: 12px;
+    }
+    .trigger-info {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+      padding: 6px 10px;
+      background: var(--bg-secondary);
+      border-radius: 6px;
+    }
+    .workflow-steps {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+      padding: 12px;
+      background: var(--bg-secondary);
+      border-radius: 8px;
+    }
+    .workflow-step {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 10px;
+      background: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      font-size: 0.8rem;
+    }
+    .step-content {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .step-label {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+    }
+    .workflow-arrow {
+      color: var(--text-muted);
+      font-size: 0.8rem;
+    }
+    .run-info {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+    }
+
+    /* === EXPORT BUTTONS === */
+    .export-buttons {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 16px;
+    }
+
+    /* === TEAM OVERVIEW === */
+    .team-overview {
+      margin-bottom: 20px;
+    }
+
+    /* === TEAM CARDS & GRID === */
+    .team-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 16px;
+    }
+    .team-card {
+      background: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 20px;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: var(--card-shadow);
+    }
+    .team-card:hover {
+      box-shadow: var(--card-shadow-hover);
+      transform: translateY(-2px);
+    }
+    .team-stats {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+      margin: 12px 0;
+    }
+    .team-stat {
+      text-align: center;
+      padding: 8px;
+      border-radius: 8px;
+      background: var(--bg-secondary);
+    }
+    .team-stat .team-stat-value {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    .team-stat .team-stat-label {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+    }
+
+    /* === PROJECT CARD === */
+    .project-card {
+      background: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: var(--card-shadow);
+    }
+    .project-card:hover {
+      box-shadow: var(--card-shadow-hover);
+      transform: translateY(-2px);
+    }
+    .project-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .project-body {
+      padding: 16px 20px;
+    }
+
+    /* === DATA TABLE === */
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+    }
+    .data-table th {
+      padding: 12px 16px;
+      text-align: left;
+      font-weight: 600;
+      color: var(--text-secondary);
+      border-bottom: 2px solid var(--border-color);
+      background: var(--bg-secondary);
+      white-space: nowrap;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+    .data-table td {
+      padding: 10px 16px;
+      border-bottom: 1px solid var(--border-color);
+      color: var(--text-primary);
+    }
+    .data-table tbody tr:hover {
+      background: var(--bg-secondary);
+    }
+    .detail-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+    }
+    .detail-table th {
+      padding: 10px 14px;
+      text-align: left;
+      font-weight: 600;
+      color: var(--text-secondary);
+      border-bottom: 2px solid var(--border-color);
+      background: var(--bg-secondary);
+      font-size: 0.8rem;
+    }
+    .detail-table td {
+      padding: 8px 14px;
+      border-bottom: 1px solid var(--border-color);
+    }
+    .detail-table tbody tr:hover {
+      background: var(--bg-secondary);
+    }
+
+    /* === GANTT TABLE === */
+    .gantt-container {
+      overflow-x: auto;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+    }
+    .gantt-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.8rem;
+    }
+    .gantt-table th,
+    .gantt-table td {
+      padding: 8px 10px;
+      border: 1px solid var(--border-color);
+      text-align: center;
+      white-space: nowrap;
+    }
+    .gantt-table th {
+      background: var(--bg-secondary);
+      font-weight: 600;
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+    }
+    .gantt-table td:first-child {
+      text-align: left;
+      font-weight: 500;
+      min-width: 150px;
+    }
+
+    /* === TAGS === */
+    .tag {
+      display: inline-block;
+      padding: 2px 10px;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      background: var(--bg-tertiary);
+      color: var(--text-secondary);
+    }
+    .tools-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    /* === ICON BUTTON === */
+    .btn-icon {
+      background: none;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      cursor: pointer;
+      padding: 6px 10px;
+      font-size: 0.9rem;
+      color: var(--text-primary);
+      transition: all 0.2s;
+    }
+    .btn-icon:hover {
+      background: var(--bg-secondary);
+      border-color: var(--accent);
+    }
+
+    /* === BUTTONS === */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 8px 16px;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+      font-family: inherit;
+    }
+    .btn-primary {
+      background: var(--accent);
+      color: white;
+    }
+    .btn-primary:hover {
+      background: var(--accent-hover);
+    }
+    .btn-secondary {
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      border: 1px solid var(--border-color);
+    }
+    .btn-secondary:hover {
+      background: var(--bg-tertiary);
+    }
+    .btn-danger {
+      background: var(--danger);
+      color: white;
+    }
+    .btn-danger:hover {
+      opacity: 0.9;
+    }
+    .btn-sm {
+      padding: 4px 10px;
+      font-size: 0.8rem;
+    }
+
+    /* === FORM INPUTS === */
+    .input-select,
+    .input-text {
+      padding: 8px 12px;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      font-size: 0.85rem;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      font-family: inherit;
+    }
+    .input-select:focus,
+    .input-text:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+    }
+    .input-range {
+      width: 100%;
+      accent-color: var(--accent);
+    }
+
+    /* === SETTING GROUP === */
+    .setting-group {
+      margin-bottom: 20px;
+    }
+    .setting-group label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+      color: var(--text-primary);
+    }
+
+    /* === PROGRESS BAR === */
+    .progress-bar {
+      height: 8px;
+      background: var(--bg-tertiary);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      border-radius: 4px;
+      transition: width 0.3s;
+      background: var(--accent);
+    }
+
+    /* === INFO BOX === */
+    .info-box {
+      padding: 16px 20px;
+      border-radius: 8px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      margin-bottom: 16px;
+    }
+
+    /* === RADIO GROUP === */
+    .radio-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .radio-group label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      font-weight: 400;
+    }
+
+    /* === GLOBAL STATS === */
+    .global-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    /* === METRICS GRID === */
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+    .metric-card {
+      background: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 16px;
+      text-align: center;
+    }
+    .metric-card .metric-value {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+    .metric-card .metric-label {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    /* === QUICK ACTIONS === */
+    .quick-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+
+    /* === FLOW DIAGRAM === */
+    .flow-diagram {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 16px;
+      overflow-x: auto;
+      flex-wrap: wrap;
+    }
+    .flow-arrow {
+      font-size: 1.2rem;
+      color: var(--text-muted);
+    }
+
+    /* === SUMMARY FOOTER === */
+    .summary-footer {
+      display: flex;
+      gap: 16px;
+      padding: 12px 16px;
+      background: var(--bg-tertiary);
+      border-radius: 8px;
+      margin-top: 16px;
+      flex-wrap: wrap;
+    }
+    .summary-footer span {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+    }
+
+    /* === LABEL === */
+    .label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
+    }
+
+    /* === ERROR === */
+    .error {
+      text-align: center;
+      padding: 40px;
+      color: var(--text-muted);
+    }
+
+    /* === SHOW/HIDDEN === */
+    .hidden {
+      display: none !important;
+    }
+    .show {
+      display: block !important;
+    }
+
+    /* === TEXT UTILITIES === */
+    .text-muted {
+      color: var(--text-muted);
+    }
+
+    /* === RESPONSIVE === */
+    @media (max-width: 1200px) {
+      .chart-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    @media (max-width: 768px) {
+      #sidebar {
+        width: 0;
+        overflow: hidden;
+      }
+      #main-content {
+        margin-left: 0;
+        width: 100%;
+      }
+      .stat-grid {
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      }
+      .card-grid {
+        grid-template-columns: 1fr;
+      }
+      .controls-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* === ACTIVITY TIMELINE (Overview feed) === */
+    .activity-timeline {
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* === PROJECT DETAIL TAB BUTTON === */
+    .tab {
+      padding: 10px 20px;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      border-bottom: 2px solid transparent;
+      margin-bottom: -2px;
+      transition: all 0.2s;
+    }
+    .tab:hover {
+      color: var(--text-primary);
+    }
     .tab.active {
       color: var(--accent);
       border-bottom-color: var(--accent);
     }
 
-    .tab-content {
+    /* === DYNAMIC BADGE COLORS (status/type) === */
+    .badge-active { background: #dcfce7; color: #16a34a; }
+    .badge-idle { background: #fef3c7; color: #d97706; }
+    .badge-paused { background: var(--bg-secondary); color: var(--text-muted); }
+    .badge-error { background: #fee2e2; color: #dc2626; }
+    .badge-on_track { background: #dcfce7; color: #16a34a; }
+    .badge-completed { background: #dbeafe; color: #2563eb; }
+    .badge-in_progress { background: #fef3c7; color: #d97706; }
+    .badge-pending { background: var(--bg-secondary); color: var(--text-muted); }
+    .badge-at_risk { background: #fee2e2; color: #dc2626; }
+    .badge-delayed { background: #fce4ec; color: #c62828; }
+    .badge-success { background: #dcfce7; color: #16a34a; }
+    .badge-info { background: #dbeafe; color: #2563eb; }
+    .badge-alert { background: #fef3c7; color: #d97706; }
+    .badge-warning { background: #fef3c7; color: #d97706; }
+    .badge-daily { background: var(--accent-light); color: var(--accent); }
+    .badge-weekly { background: #f3e8ff; color: #7c3aed; }
+    .badge-continuous { background: #dcfce7; color: #16a34a; }
+    .badge-hourly { background: #fef3c7; color: #d97706; }
+    .badge-schedule { background: #e0f2fe; color: #0284c7; }
+    .badge-event { background: #fce7f3; color: #db2777; }
+    [data-theme="dark"] .badge-active { background: #14532d; color: #4ade80; }
+    [data-theme="dark"] .badge-idle { background: #451a03; color: #fbbf24; }
+    [data-theme="dark"] .badge-error { background: #450a0a; color: #f87171; }
+    [data-theme="dark"] .badge-on_track { background: #14532d; color: #4ade80; }
+    [data-theme="dark"] .badge-completed { background: #1e3a5f; color: #60a5fa; }
+    [data-theme="dark"] .badge-in_progress { background: #451a03; color: #fbbf24; }
+    [data-theme="dark"] .badge-at_risk { background: #450a0a; color: #f87171; }
+    [data-theme="dark"] .badge-delayed { background: #450a0a; color: #f87171; }
+    [data-theme="dark"] .badge-success { background: #14532d; color: #4ade80; }
+    [data-theme="dark"] .badge-info { background: #1e3a5f; color: #60a5fa; }
+    [data-theme="dark"] .badge-alert { background: #451a03; color: #fbbf24; }
+    [data-theme="dark"] .badge-warning { background: #451a03; color: #fbbf24; }
+
+    /* === CHART.JS OVERFLOW FIX === */
+    canvas {
+      max-width: 100% !important;
+      max-height: 320px !important;
+    }
+    .chart-grid .card {
+      position: relative;
+      overflow: hidden;
+      max-height: 360px;
+    }
+    #view-container {
+      overflow-x: hidden;
+    }
+
+    /* ==================== NOTIFICATION CENTER ==================== */
+    #notif-bell {
+      position: relative;
+      cursor: pointer;
+      font-size: 20px;
+      padding: 4px 8px;
+      border: none;
+      background: none;
+      color: var(--text-primary);
+    }
+    #notif-bell .notif-badge {
+      position: absolute;
+      top: 0; right: 2px;
+      background: #ef4444;
+      color: #fff;
+      font-size: 10px;
+      font-weight: 700;
+      min-width: 16px;
+      height: 16px;
+      border-radius: 8px;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 0 4px;
+      line-height: 16px;
+    }
+    #notif-bell .notif-badge.visible { display: flex; }
+    #notif-panel {
+      position: fixed;
+      top: 56px; right: 20px;
+      width: 360px;
+      max-height: 480px;
+      background: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+      z-index: 9998;
+      display: none;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    #notif-panel.visible { display: flex; }
+    .notif-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border-color);
+      font-weight: 600;
+      font-size: 14px;
+    }
+    .notif-header button {
+      background: none; border: none; font-size: 12px; cursor: pointer; color: var(--accent); padding: 2px 6px;
+    }
+    .notif-list {
+      flex: 1;
+      overflow-y: auto;
+      max-height: 400px;
+    }
+    .notif-item {
+      display: flex;
+      gap: 10px;
+      padding: 10px 16px;
+      border-bottom: 1px solid var(--border-color);
+      font-size: 13px;
+      transition: background .15s;
+    }
+    .notif-item:hover { background: var(--bg-secondary); }
+    .notif-item.unread { background: var(--accent-light, #eff6ff); }
+    .notif-dot {
+      min-width: 8px; width: 8px; height: 8px;
+      border-radius: 50%; margin-top: 5px;
+    }
+    .notif-dot.info { background: #3b82f6; }
+    .notif-dot.success { background: #22c55e; }
+    .notif-dot.warning { background: #f59e0b; }
+    .notif-dot.error { background: #ef4444; }
+    .notif-content { flex: 1; min-width: 0; }
+    .notif-title { font-weight: 600; }
+    .notif-body { color: var(--text-secondary); font-size: 12px; margin-top: 2px; }
+    .notif-time { color: var(--text-muted); font-size: 11px; white-space: nowrap; margin-top: 2px; }
+    .notif-empty { padding: 32px 16px; text-align: center; color: var(--text-muted); font-size: 13px; }
+
+    [data-theme="dark"] #notif-panel { background: var(--bg-secondary); border-color: var(--border-color); }
+    [data-theme="dark"] .notif-item.unread { background: rgba(59,130,246,0.08); }
+
+    /* ==================== TALK UI - CHAT PANEL ==================== */
+    #talk-fab {
+      position: fixed;
+      bottom: 28px;
+      right: 28px;
+      z-index: 9999;
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      border: none;
+      background: linear-gradient(135deg, #6366f1, #8b5cf6);
+      color: #fff;
+      font-size: 26px;
+      cursor: pointer;
+      box-shadow: 0 4px 20px rgba(99,102,241,0.45);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    #talk-fab:hover {
+      transform: scale(1.1);
+      box-shadow: 0 6px 28px rgba(99,102,241,0.6);
+    }
+    #talk-fab.open {
+      background: linear-gradient(135deg, #ef4444, #f97316);
+      box-shadow: 0 4px 20px rgba(239,68,68,0.45);
+    }
+    #talk-fab .fab-badge {
+      position: absolute;
+      top: -2px;
+      right: -2px;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: #22c55e;
+      border: 2px solid #fff;
       display: none;
     }
+    #talk-fab.has-unread .fab-badge { display: block; }
 
-    .tab-content.active {
-      display: block;
-      animation: fadeIn 0.2s ease;
-    }
-
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-      }
-      to {
-        opacity: 1;
-      }
-    }
-
-    /* Multi-select and filtering */
-    .filter-group {
+    #talk-panel {
+      position: fixed;
+      bottom: 96px;
+      right: 28px;
+      z-index: 9998;
+      width: 400px;
+      max-width: calc(100vw - 56px);
+      height: 520px;
+      max-height: calc(100vh - 140px);
+      background: var(--bg-primary, #ffffff);
+      border: 1px solid var(--border, #e2e8f0);
+      border-radius: 16px;
+      box-shadow: 0 12px 48px rgba(0,0,0,0.18);
       display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      transform: translateY(20px) scale(0.95);
+      opacity: 0;
+      pointer-events: none;
+      transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+                  opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    #talk-panel.visible {
+      transform: translateY(0) scale(1);
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .talk-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 18px;
+      background: linear-gradient(135deg, #6366f1, #8b5cf6);
+      color: #fff;
+      flex-shrink: 0;
+    }
+    .talk-header-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+    .talk-header-info { flex: 1; }
+    .talk-header-info h4 { margin: 0; font-size: 14px; font-weight: 600; }
+    .talk-header-info span { font-size: 11px; opacity: 0.8; }
+    .talk-header-actions { display: flex; gap: 6px; }
+    .talk-header-actions button {
+      background: rgba(255,255,255,0.15);
+      border: none;
+      color: #fff;
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.15s;
+    }
+    .talk-header-actions button:hover { background: rgba(255,255,255,0.3); }
+
+    .talk-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
       gap: 12px;
-      margin-bottom: 20px;
+    }
+    .talk-messages::-webkit-scrollbar { width: 4px; }
+    .talk-messages::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+
+    .talk-msg {
+      max-width: 85%;
+      padding: 10px 14px;
+      border-radius: 14px;
+      font-size: 13px;
+      line-height: 1.5;
+      word-break: break-word;
+      animation: talkMsgIn 0.2s ease-out;
+    }
+    @keyframes talkMsgIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .talk-msg.bot {
+      align-self: flex-start;
+      background: var(--bg-secondary, #f1f5f9);
+      color: var(--text-primary, #1e293b);
+      border-bottom-left-radius: 4px;
+    }
+    .talk-msg.user {
+      align-self: flex-end;
+      background: linear-gradient(135deg, #6366f1, #8b5cf6);
+      color: #fff;
+      border-bottom-right-radius: 4px;
+    }
+    .talk-msg.system {
+      align-self: center;
+      background: transparent;
+      color: var(--text-secondary, #94a3b8);
+      font-size: 11px;
+      padding: 4px 12px;
+      max-width: 100%;
+      text-align: center;
+    }
+    .talk-msg .msg-time {
+      display: block;
+      font-size: 10px;
+      opacity: 0.6;
+      margin-top: 4px;
+    }
+    .talk-msg.bot .msg-actions {
+      display: flex;
+      gap: 6px;
+      margin-top: 8px;
       flex-wrap: wrap;
     }
-
-    .filter-tag {
-      padding: 6px 12px;
-      background-color: var(--accent-light);
-      color: var(--accent);
-      border: 1px solid var(--accent);
-      border-radius: 20px;
+    .talk-msg.bot .msg-actions button {
+      background: var(--bg-primary, #fff);
+      border: 1px solid var(--border, #e2e8f0);
+      border-radius: 8px;
+      padding: 4px 10px;
+      font-size: 11px;
       cursor: pointer;
-      font-size: 14px;
-      transition: all 0.2s ease;
+      color: #6366f1;
+      transition: background 0.15s;
+    }
+    .talk-msg.bot .msg-actions button:hover {
+      background: #6366f1;
+      color: #fff;
     }
 
-    .filter-tag:hover {
-      background-color: var(--accent);
-      color: white;
+    .talk-typing {
+      align-self: flex-start;
+      padding: 10px 14px;
+      background: var(--bg-secondary, #f1f5f9);
+      border-radius: 14px;
+      border-bottom-left-radius: 4px;
+      display: none;
     }
-
-    .filter-tag.active {
-      background-color: var(--accent);
-      color: white;
-    }
-
-    /* Data table enhancements */
-    .data-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 20px;
-    }
-
-    .data-table thead {
-      background-color: var(--bg-tertiary);
-    }
-
-    .data-table th {
-      padding: 12px;
-      text-align: left;
-      font-weight: 600;
-      color: var(--text-primary);
-      border-bottom: 2px solid var(--border-color);
-    }
-
-    .data-table td {
-      padding: 12px;
-      border-bottom: 1px solid var(--border-color);
-    }
-
-    .data-table tr:hover {
-      background-color: var(--bg-secondary);
-    }
-
-    /* Loading and empty states */
-    .empty-state {
-      text-align: center;
-      padding: 40px 20px;
-      color: var(--text-secondary);
-    }
-
-    .empty-state-icon {
-      font-size: 48px;
-      margin-bottom: 16px;
-      opacity: 0.5;
-    }
-
-    .loading-spinner {
-      display: inline-block;
-      width: 30px;
-      height: 30px;
-      border: 3px solid var(--border-color);
-      border-top-color: var(--accent);
+    .talk-typing.show { display: flex; gap: 4px; align-items: center; }
+    .talk-typing span {
+      width: 6px; height: 6px;
       border-radius: 50%;
-      animation: spin 0.8s linear infinite;
+      background: #94a3b8;
+      animation: typingDot 1.4s infinite both;
+    }
+    .talk-typing span:nth-child(2) { animation-delay: 0.2s; }
+    .talk-typing span:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes typingDot {
+      0%, 80%, 100% { opacity: 0.3; transform: scale(0.8); }
+      40% { opacity: 1; transform: scale(1); }
     }
 
-    @keyframes spin {
-      to {
-        transform: rotate(360deg);
+    .talk-input-area {
+      display: flex;
+      align-items: flex-end;
+      gap: 8px;
+      padding: 12px 14px;
+      border-top: 1px solid var(--border, #e2e8f0);
+      background: var(--bg-primary, #fff);
+      flex-shrink: 0;
+    }
+    .talk-input-area textarea {
+      flex: 1;
+      border: 1px solid var(--border, #e2e8f0);
+      border-radius: 12px;
+      padding: 8px 14px;
+      font-size: 13px;
+      font-family: inherit;
+      resize: none;
+      max-height: 80px;
+      min-height: 36px;
+      line-height: 1.4;
+      background: var(--bg-secondary, #f8fafc);
+      color: var(--text-primary, #1e293b);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .talk-input-area textarea:focus {
+      border-color: #6366f1;
+    }
+    .talk-input-area textarea::placeholder {
+      color: var(--text-secondary, #94a3b8);
+    }
+    .talk-send-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: none;
+      background: linear-gradient(135deg, #6366f1, #8b5cf6);
+      color: #fff;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      transition: transform 0.15s, opacity 0.15s;
+      flex-shrink: 0;
+    }
+    .talk-send-btn:hover { transform: scale(1.08); }
+    .talk-send-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+    .talk-suggestions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      padding: 8px 14px;
+      border-top: 1px solid var(--border, #e2e8f0);
+      background: var(--bg-primary, #fff);
+      flex-shrink: 0;
+    }
+    .talk-suggestions button {
+      background: var(--bg-secondary, #f1f5f9);
+      border: 1px solid var(--border, #e2e8f0);
+      border-radius: 16px;
+      padding: 4px 12px;
+      font-size: 11px;
+      cursor: pointer;
+      color: var(--text-primary, #475569);
+      white-space: nowrap;
+      transition: all 0.15s;
+    }
+    .talk-suggestions button:hover {
+      background: #6366f1;
+      color: #fff;
+      border-color: #6366f1;
+    }
+
+    /* Dark theme overrides for Talk UI */
+    [data-theme="dark"] #talk-panel {
+      background: #1e293b;
+      border-color: #334155;
+    }
+    [data-theme="dark"] .talk-msg.bot { background: #334155; color: #e2e8f0; }
+    [data-theme="dark"] .talk-msg.bot .msg-actions button {
+      background: #1e293b;
+      border-color: #475569;
+    }
+    [data-theme="dark"] .talk-typing { background: #334155; }
+    [data-theme="dark"] .talk-input-area { background: #1e293b; border-color: #334155; }
+    [data-theme="dark"] .talk-input-area textarea { background: #0f172a; border-color: #334155; color: #e2e8f0; }
+    [data-theme="dark"] .talk-suggestions { background: #1e293b; border-color: #334155; }
+    [data-theme="dark"] .talk-suggestions button { background: #334155; border-color: #475569; color: #cbd5e1; }
+
+    /* Mobile responsive */
+    @media (max-width: 640px) {
+      #talk-panel {
+        right: 8px;
+        bottom: 80px;
+        width: calc(100vw - 16px);
+        height: calc(100vh - 100px);
+        border-radius: 12px;
       }
-    }
-
-    /* Panel and drawer styling */
-    .edit-panel {
-      position: fixed;
-      right: -400px;
-      top: 0;
-      width: 400px;
-      height: 100vh;
-      background-color: var(--bg-primary);
-      border-left: 1px solid var(--border-color);
-      box-shadow: -4px 0 12px rgba(0, 0, 0, 0.1);
-      transition: right 0.3s ease;
-      z-index: 1000;
-      overflow-y: auto;
-      padding: 20px;
-    }
-
-    .edit-panel.open {
-      right: 0;
-    }
-
-    /* Chart container */
-    .chart-container {
-      position: relative;
-      width: 100%;
-      height: 300px;
-      margin-bottom: 20px;
-    }
-
-    .chart-wrapper {
-      position: relative;
-      width: 100%;
-      height: 100%;
+      #talk-fab { right: 16px; bottom: 16px; }
     }
 
   </style>
@@ -1639,10 +3224,14 @@
           <span class="nav-icon">⚙️</span>
           <span class="nav-label">設定</span>
         </a>
+        <a href="javascript:void(0)" class="nav-item" onclick="toggleTalkPanel()" style="border-top:1px solid var(--border,#e2e8f0);margin-top:8px;padding-top:12px;">
+          <span class="nav-icon">💬</span>
+          <span class="nav-label">Talk AI</span>
+        </a>
       </nav>
 
       <div class="sidebar-footer">
-        <button class="collapse-btn" title="Toggle Sidebar">☰</button>
+        <button class="collapse-btn" onclick="toggleSidebar()" title="Toggle Sidebar">☰</button>
       </div>
     </aside>
 
@@ -1661,9 +3250,22 @@
         </div>
 
         <div class="topbar-right">
-          <button id="themeToggle" onclick="setTheme(state.theme === 'light' ? 'dark' : 'light')" class="theme-toggle-btn" title="Toggle Theme">🌙</button>
+          <button id="notif-bell" onclick="toggleNotifPanel()" title="通知中心">
+            🔔
+            <span class="notif-badge" id="notif-badge-count">0</span>
+          </button>
+          <button id="theme-toggle" onclick="toggleTheme()" class="theme-toggle-btn" title="Toggle Theme">🌙</button>
           <button class="user-menu-btn" title="User Menu">⋮</button>
           <div class="avatar">管</div>
+        </div>
+
+        <!-- Notification Center Panel -->
+        <div id="notif-panel">
+          <div class="notif-header">
+            <span>🔔 通知中心</span>
+            <button onclick="markAllNotifsRead()">全部已讀</button>
+          </div>
+          <div class="notif-list" id="notif-list"></div>
         </div>
       </header>
 
@@ -1675,19 +3277,19 @@
   </div>
 
   <!-- EDIT PANEL OVERLAY -->
-  <div id="edit-overlay" class="edit-overlay hidden"></div>
+  <div id="edit-overlay" class="edit-overlay hidden" onclick="closeEditPanel()"></div>
 
   <!-- EDIT PANEL -->
   <div id="edit-panel" class="edit-panel hidden">
     <div class="edit-panel-header">
       <h3 id="edit-panel-title">Edit Action Item</h3>
-      <button class="btn-close">&times;</button>
+      <button class="btn-close" onclick="closeEditPanel()">&times;</button>
     </div>
     <div id="edit-panel-body" class="edit-panel-body">
       <!-- Dynamic form content will be rendered here -->
     </div>
     <div class="edit-panel-footer">
-      <button class="btn btn-secondary">取消</button>
+      <button class="btn btn-secondary" onclick="closeEditPanel()">取消</button>
       <button class="btn btn-primary" onclick="saveEdit()">儲存</button>
     </div>
   </div>
@@ -1701,13 +3303,230 @@
       <!-- Dynamic modal content will be rendered here -->
     </div>
   </div>
-</body>
 
+  <!-- ==================== TALK UI ==================== -->
+  <button id="talk-fab" onclick="toggleTalkPanel()" title="Talk to AI Assistant">
+    <span id="talk-fab-icon">💬</span>
+    <div class="fab-badge"></div>
+  </button>
+
+  <div id="talk-panel">
+    <div class="talk-header">
+      <div class="talk-header-avatar">🤖</div>
+      <div class="talk-header-info">
+        <h4>DTO Assistant</h4>
+        <span id="talk-status-text">本地指令模式</span>
+      </div>
+      <div class="talk-header-actions">
+        <button onclick="clearChatHistory()" title="清除對話">🗑</button>
+        <button onclick="toggleTalkPanel()" title="關閉">✕</button>
+      </div>
+    </div>
+
+    <div class="talk-messages" id="talk-messages">
+      <!-- Messages rendered here -->
+    </div>
+
+    <div class="talk-typing" id="talk-typing">
+      <span></span><span></span><span></span>
+    </div>
+
+    <div class="talk-suggestions" id="talk-suggestions">
+      <button onclick="sendSuggestion('本週摘要')">📊 摘要</button>
+      <button onclick="sendSuggestion('逾期任務')">⚠️ 逾期</button>
+      <button onclick="sendSuggestion('Agent 狀態')">🤖 Agent</button>
+      <button onclick="sendSuggestion('工作流列表')">⚡ 工作流</button>
+      <button onclick="sendSuggestion('幫助')">📖 指令</button>
+    </div>
+
+    <div class="talk-input-area">
+      <textarea id="talk-input" placeholder="輸入指令或提問..." rows="1"
+        onkeydown="handleTalkKeydown(event)"
+        oninput="autoResizeTalkInput(this)"></textarea>
+      <button class="talk-send-btn" id="talk-send-btn" onclick="sendTalkMessage()" title="送出">➤</button>
+    </div>
+  </div>
 
   <script>
 // ==================== DATA LAYER ====================
 const APP_VERSION = '3.0.0';
 const STORAGE_KEY = 'dto_dashboard_v3';
+
+// ==================== SUPABASE CONFIG ====================
+const SUPABASE_URL = 'https://akubvdnrbghxcujdfhzk.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFrdWJ2ZG5yYmdoeGN1amRmaHprIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA1MzQ3MzQsImV4cCI6MjA4NjExMDczNH0.uOCt7uh-9R_j22LiG0tF-Hupt6dXtOM-P-y9d4MZQCY';
+let sb = null;
+try { if (window.supabase) sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY); } catch(e) { console.warn('[Supabase] Init failed:', e); }
+
+// ==================== DB ↔ FRONTEND ADAPTERS ====================
+const AUTO_DB2FE = { 'full': 'lead', 'supervised': 'specialist', 'manual': 'intern' };
+const AUTO_FE2DB = { 'lead': 'full', 'specialist': 'supervised', 'intern': 'manual' };
+
+function dbProjectToFE(dbP, dbActions) {
+  return {
+    id: dbP.id, code: dbP.code, name: dbP.name,
+    description: dbP.metadata?.description || '',
+    owner: dbP.owner || '',
+    lead: dbP.metadata?.lead || '',
+    startDate: dbP.start_date ? dbP.start_date.substring(0, 7) : '',
+    endDate: dbP.end_date ? dbP.end_date.substring(0, 7) : '',
+    status: dbP.status, progress: dbP.progress,
+    color: dbP.color || '#3b82f6',
+    actionItems: dbActions.filter(a => a.project_id === dbP.id).map(dbActionToFE)
+  };
+}
+
+function dbActionToFE(a) {
+  const m = a.notes ? a.notes.match(/\[M(\d+)-M(\d+)\]/) : null;
+  return {
+    id: a.id, name: a.title,
+    breakdown: a.notes ? a.notes.replace(/\s*\[M\d+-M\d+\]\s*$/, '') : '',
+    ownerUnit: a.category || '', owner: a.owner || '',
+    status: a.status, priority: a.priority,
+    startMonth: m ? parseInt(m[1]) : 1,
+    endMonth: m ? parseInt(m[2]) : 12
+  };
+}
+
+function dbAgentToFE(a) {
+  let sched = {};
+  try { sched = typeof a.schedule === 'string' ? JSON.parse(a.schedule) : (a.schedule || {}); } catch(e) {}
+  return {
+    id: a.id, name: a.name, emoji: a.emoji || '🤖',
+    role: a.role || '', description: a.description || '',
+    status: a.status,
+    autonomy: AUTO_DB2FE[a.autonomy] || a.autonomy,
+    assignedProjects: a.assigned_projects || [],
+    schedule: { ...sched, timezone: a.timezone || 'Asia/Taipei' },
+    tools: a.skills || [],
+    llmConfig: { provider: a.llm_provider || 'none', model: a.llm_model || '', temperature: a.llm_config?.temperature || 0.7 },
+    metrics: {
+      tasksCompleted: a.llm_config?.tasks_completed || 0,
+      avgResponseTime: a.llm_config?.avg_response_time || '0s',
+      reliability: a.llm_config?.reliability || 100,
+      weeklyTasks: a.llm_config?.weekly_tasks || [0,0,0,0]
+    },
+    taskQueue: [],
+    activityLog: [{ time: new Date().toISOString(), type: 'info', message: 'Loaded from cloud' }],
+    createdAt: a.created_at ? a.created_at.split('T')[0] : new Date().toISOString().split('T')[0],
+    updatedAt: a.updated_at ? a.updated_at.split('T')[0] : new Date().toISOString().split('T')[0]
+  };
+}
+
+function dbWorkflowToFE(w) {
+  return {
+    id: w.id, name: w.name, description: w.description || '',
+    trigger: { type: w.trigger_type, ...(w.trigger_config || {}) },
+    steps: w.steps || [], status: w.status,
+    lastRun: w.last_run || '', nextRun: w.trigger_config?.next_run || 'on-event'
+  };
+}
+
+function feProjectToDb(p) {
+  return {
+    id: p.id, code: p.code, name: p.name, status: p.status, progress: p.progress,
+    owner: p.owner || '',
+    start_date: p.startDate ? (p.startDate.length === 7 ? p.startDate + '-01' : p.startDate) : null,
+    end_date: p.endDate ? (p.endDate.length === 7 ? p.endDate + '-28' : p.endDate) : null,
+    color: p.color || '#3b82f6',
+    metadata: { description: p.description || '', lead: p.lead || '' }
+  };
+}
+
+function feActionToDb(a, projectId) {
+  return {
+    id: a.id, project_id: projectId, title: a.name,
+    status: a.status, priority: a.priority, owner: a.owner || '',
+    due_date: a.endMonth ? ('2026-' + String(a.endMonth).padStart(2,'0') + '-28') : null,
+    notes: (a.breakdown || '') + ' [M' + (a.startMonth||1) + '-M' + (a.endMonth||12) + ']',
+    category: a.ownerUnit || ''
+  };
+}
+
+function feAgentToDb(a) {
+  const sched = { ...a.schedule }; const tz = sched.timezone || 'Asia/Taipei'; delete sched.timezone;
+  return {
+    id: a.id, name: a.name, emoji: a.emoji || '🤖',
+    role: a.role || '', description: a.description || '',
+    status: a.status, autonomy: AUTO_FE2DB[a.autonomy] || 'supervised',
+    llm_provider: a.llmConfig?.provider || 'none',
+    llm_model: a.llmConfig?.model || '',
+    llm_config: {
+      temperature: a.llmConfig?.temperature || 0.7,
+      tasks_completed: a.metrics?.tasksCompleted || 0,
+      avg_response_time: a.metrics?.avgResponseTime || '0s',
+      reliability: a.metrics?.reliability || 100,
+      weekly_tasks: a.metrics?.weeklyTasks || [0,0,0,0]
+    },
+    skills: a.tools || [], mcp_servers: [],
+    assigned_projects: a.assignedProjects || [],
+    schedule: JSON.stringify(sched), timezone: tz
+  };
+}
+
+function feWorkflowToDb(w) {
+  const tc = { ...w.trigger }; delete tc.type;
+  return {
+    id: w.id, name: w.name, description: w.description || '',
+    trigger_type: w.trigger?.type || 'manual', trigger_config: tc,
+    steps: w.steps || [], status: w.status || 'active',
+    last_run: w.lastRun || null
+  };
+}
+
+// ==================== CLOUD SYNC ====================
+let _syncTimer = null;
+function scheduleCloudSync() {
+  if (!sb) return;
+  if (_syncTimer) clearTimeout(_syncTimer);
+  _syncTimer = setTimeout(() => syncToCloud(), 2000);
+}
+
+async function syncToCloud() {
+  if (!sb) return;
+  try {
+    const dbP = state.projects.map(feProjectToDb);
+    if (dbP.length) await sb.from('projects').upsert(dbP, { onConflict: 'id' });
+    const dbA = [];
+    state.projects.forEach(p => (p.actionItems||[]).forEach(a => dbA.push(feActionToDb(a, p.id))));
+    if (dbA.length) await sb.from('action_items').upsert(dbA, { onConflict: 'id' });
+    const dbAg = state.agents.map(feAgentToDb);
+    if (dbAg.length) await sb.from('agents').upsert(dbAg, { onConflict: 'id' });
+    const dbW = state.workflows.map(feWorkflowToDb);
+    if (dbW.length) await sb.from('workflows').upsert(dbW, { onConflict: 'id' });
+    console.log('[Cloud] ☁️ Synced');
+  } catch (err) { console.warn('[Cloud] Sync error:', err.message); }
+}
+
+async function deleteFromCloud(table, id) {
+  if (!sb) return;
+  try { await sb.from(table).delete().eq('id', id); } catch(e) { console.warn('[Cloud] Delete error:', e.message); }
+}
+
+async function loadFromCloud() {
+  if (!sb) return false;
+  try {
+    const load = Promise.all([
+      sb.from('projects').select('*').order('code'),
+      sb.from('action_items').select('*'),
+      sb.from('agents').select('*').order('created_at'),
+      sb.from('workflows').select('*').order('created_at')
+    ]);
+    const timeout = new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), 5000));
+    const [pR, aR, agR, wR] = await Promise.race([load, timeout]);
+    if (pR.error) throw pR.error;
+    state.projects = (pR.data||[]).map(p => dbProjectToFE(p, aR.data||[]));
+    state.agents = (agR.data||[]).map(dbAgentToFE);
+    state.workflows = (wR.data||[]).map(dbWorkflowToFE);
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) { try { const ps = JSON.parse(saved); state.llmConfig = ps.llmConfig || {...llmConfig}; state.theme = ps.theme || 'system'; state.sidebarCollapsed = ps.sidebarCollapsed || false; } catch(e) {} }
+    console.log('[Cloud] ☁️ Loaded:', state.projects.length, 'projects,', state.agents.length, 'agents,', state.workflows.length, 'workflows');
+    return true;
+  } catch (err) {
+    console.warn('[Cloud] Load failed, using localStorage:', err.message);
+    return false;
+  }
+}
 
 // LLM Configuration (reserved for future AI integration)
 let llmConfig = {
@@ -2013,7 +3832,10 @@ let state = {
   sidebarCollapsed: false,
   theme: 'system',
   editingItem: null,
-  searchQuery: ''
+  searchQuery: '',
+  agentDetailTab: 'queue',
+  chatMessages: [],
+  talkPanelOpen: false
 };
 
 function loadState() {
@@ -2051,6 +3873,7 @@ function saveState() {
     theme: state.theme,
     sidebarCollapsed: state.sidebarCollapsed
   }));
+  scheduleCloudSync();
 }
 
 // ==================== ROUTER ====================
@@ -2150,10 +3973,11 @@ function cycleTheme() {
 function updateSidebarActive() {
   document.querySelectorAll('.nav-item').forEach(item => {
     item.classList.remove('active');
-    const href = item.getAttribute('data-route');
-    if (state.currentRoute === '/' && href === '/') {
+    const route = item.getAttribute('data-route');
+    const currentPath = state.currentRoute || '/';
+    if (route === 'overview' && currentPath === '/') {
       item.classList.add('active');
-    } else if (href !== '/' && state.currentRoute.startsWith(href)) {
+    } else if (route !== 'overview' && currentPath.startsWith('/' + route)) {
       item.classList.add('active');
     }
   });
@@ -2425,13 +4249,21 @@ function exportCSV() {
   showToast('CSV 已匯出', 'success');
 }
 
-function showModal(html) {
-  document.getElementById('modal-content').innerHTML = html;
+function showModal(titleOrHtml, contentHtml, options) {
+  const mc = document.getElementById('modal-content');
+  if (contentHtml) {
+    mc.innerHTML = '<div style="padding:20px"><h3 style="margin:0 0 16px">' + titleOrHtml + '</h3>' + contentHtml + '</div>';
+  } else {
+    mc.innerHTML = titleOrHtml;
+  }
+  if (options && options.width) mc.style.maxWidth = options.width;
+  else mc.style.maxWidth = '600px';
   document.getElementById('modal-overlay').classList.remove('hidden');
 }
 
 function closeModal() {
   document.getElementById('modal-overlay').classList.add('hidden');
+  document.getElementById('modal-content').style.maxWidth = '';
 }
 /**
  * DTO Dashboard v3.0 - Main View Render Functions
@@ -2512,37 +4344,99 @@ function renderOverview(container, params) {
       <div class="chart-grid">
         <div class="card">
           <h3>Project Progress</h3>
-          <canvas id="chart-progress" width="400" height="250"></canvas>
+          <div style="position:relative;height:250px;max-height:250px;overflow:hidden;">
+            <canvas id="chart-progress"></canvas>
+          </div>
         </div>
 
         <div class="card">
           <h3>Status Distribution</h3>
-          <canvas id="chart-status" width="400" height="250"></canvas>
+          <div style="position:relative;height:250px;max-height:250px;overflow:hidden;">
+            <canvas id="chart-status"></canvas>
+          </div>
         </div>
 
         <div class="card">
           <h3>Monthly Timeline</h3>
-          <canvas id="chart-timeline" width="400" height="250"></canvas>
+          <div style="position:relative;height:250px;max-height:250px;overflow:hidden;">
+            <canvas id="chart-timeline"></canvas>
+          </div>
         </div>
 
         <div class="card">
           <h3>Owner Workload</h3>
-          <canvas id="chart-workload" width="400" height="250"></canvas>
+          <div style="position:relative;height:250px;max-height:250px;overflow:hidden;">
+            <canvas id="chart-workload"></canvas>
+          </div>
         </div>
       </div>
 
-      <!-- Recent Activity Section -->
+      <!-- Agent Squad Quick Panel -->
       <div class="card">
-        <h3>📌 Recent Activity</h3>
-        <div class="activity-list">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+          <h3>🤖 Agent Squad 即時狀態</h3>
+          <a onclick="navigateTo('/agents')" style="cursor:pointer;color:var(--accent);font-size:13px;">查看全部 →</a>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;">
+          ${(state.agents || []).map(ag => {
+            const statusColor = ag.status === 'active' ? '#22c55e' : ag.status === 'paused' ? '#94a3b8' : '#f59e0b';
+            const qLen = ag.taskQueue?.filter(t => t.status !== 'completed').length || 0;
+            return '<div style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--bg-secondary);border-radius:8px;border-left:3px solid ' + statusColor + ';">' +
+              '<span style="font-size:20px;">' + (ag.emoji || '🤖') + '</span>' +
+              '<div style="flex:1;min-width:0;">' +
+                '<div style="font-weight:600;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + ag.name + '</div>' +
+                '<div style="font-size:11px;color:var(--text-secondary);">' + (ag.currentTask ? ag.currentTask.substring(0, 25) : '待命中') + '</div>' +
+              '</div>' +
+              '<span style="background:' + (qLen > 0 ? 'var(--accent)' : 'var(--bg-tertiary)') + ';color:' + (qLen > 0 ? '#fff' : 'var(--text-secondary)') + ';font-size:11px;padding:2px 7px;border-radius:10px;">' + qLen + '</span>' +
+            '</div>';
+          }).join('')}
+        </div>
+      </div>
+
+      <!-- Recent Activity Section (combined project + agent) -->
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+          <h3>📌 最近活動</h3>
+          <a onclick="navigateTo('/agents/activity')" style="cursor:pointer;color:var(--accent);font-size:13px;">完整紀錄 →</a>
+        </div>
+        <div class="activity-list" id="overview-activity-feed">
           ${recentActivity.length > 0 ? recentActivity.map(log => {
             const time = new Date(log.timestamp).toLocaleTimeString('zh-TW', {hour: '2-digit', minute: '2-digit'});
             const emoji = log.agent === 'system' ? '⚙️' : '🤖';
-            return `<div class="activity-item">
-              <span>${emoji} <strong>${log.agent || 'System'}</strong> ${log.message}</span>
-              <span class="text-muted">${time}</span>
-            </div>`;
-          }).join('') : '<div class="text-muted">No recent activity</div>'}
+            return '<div class="activity-item">' +
+              '<span>' + emoji + ' <strong>' + (log.agent || 'System') + '</strong> ' + log.message + '</span>' +
+              '<span class="text-muted">' + time + '</span>' +
+            '</div>';
+          }).join('') : '<div class="text-muted">尚無活動紀錄 — 透過 Talk AI 或 Agent 操作產生</div>'}
+        </div>
+      </div>
+
+      <!-- Upcoming Deadlines -->
+      <div class="card">
+        <h3>⏰ 近期到期項目</h3>
+        <div class="activity-list">
+          ${(() => {
+            const now = new Date().getMonth() + 1;
+            const upcoming = [];
+            state.projects.forEach(p => {
+              (p.actionItems || []).forEach(a => {
+                if (a.status !== 'completed' && a.endMonth && a.endMonth >= now && a.endMonth <= now + 2) {
+                  upcoming.push({ name: a.name, owner: a.owner, endMonth: a.endMonth, project: p.code, status: a.status, priority: a.priority });
+                }
+              });
+            });
+            upcoming.sort((a, b) => a.endMonth - b.endMonth);
+            if (upcoming.length === 0) return '<div class="text-muted">近期無到期項目</div>';
+            return upcoming.slice(0, 8).map(u => {
+              const urgency = u.endMonth === now ? 'color:#ef4444;font-weight:600;' : u.endMonth === now + 1 ? 'color:#f59e0b;' : 'color:var(--text-secondary);';
+              return '<div class="activity-item">' +
+                '<span style="' + urgency + '">M' + u.endMonth + '</span> ' +
+                '<span class="tag" style="font-size:10px;padding:1px 6px;">' + u.project + '</span> ' +
+                '<span>' + u.name + '</span>' +
+                '<span class="text-muted" style="margin-left:auto;">' + (u.owner || '-') + '</span>' +
+              '</div>';
+            }).join('');
+          })()}
         </div>
       </div>
 
@@ -2550,7 +4444,7 @@ function renderOverview(container, params) {
       <div class="action-buttons">
         <button onclick="exportData()" class="btn btn-secondary">📥 匯出JSON</button>
         <button onclick="exportCSV()" class="btn btn-secondary">📊 匯出CSV</button>
-        <button onclick="if(confirm('確定要重置資料嗎？此操作無法復原。')) { state.projects = []; saveState(); location.reload(); }" class="btn btn-danger">🔄 重置資料</button>
+        <button onclick="toggleTalkPanel()" class="btn btn-primary">💬 Talk AI</button>
       </div>
     </div>
   `;
@@ -2563,11 +4457,22 @@ function renderOverview(container, params) {
   }, 100);
 }
 
+// Store chart instances for cleanup
+let chartInstances = [];
+
+function destroyAllCharts() {
+  chartInstances.forEach(c => { try { c.destroy(); } catch(e) {} });
+  chartInstances = [];
+}
+
 function initOverviewCharts() {
+  // Destroy previous charts to prevent infinite growth
+  destroyAllCharts();
+
   // Chart 1: Project Progress (horizontal bar)
   const ctx1 = document.getElementById('chart-progress');
   if (ctx1 && typeof Chart !== 'undefined') {
-    new Chart(ctx1.getContext('2d'), {
+    chartInstances.push(new Chart(ctx1.getContext('2d'), {
       type: 'bar',
       data: {
         labels: state.projects.map(p => p.code),
@@ -2594,7 +4499,7 @@ function initOverviewCharts() {
           }
         }
       }
-    });
+    }));
   }
 
   // Chart 2: Status Distribution (doughnut)
@@ -2604,7 +4509,7 @@ function initOverviewCharts() {
     state.projects.forEach(p => {
       statuses[p.status] = (statuses[p.status] || 0) + 1;
     });
-    new Chart(ctx2.getContext('2d'), {
+    chartInstances.push(new Chart(ctx2.getContext('2d'), {
       type: 'doughnut',
       data: {
         labels: Object.keys(statuses),
@@ -2618,7 +4523,7 @@ function initOverviewCharts() {
         maintainAspectRatio: false,
         plugins: { legend: { position: 'bottom' } }
       }
-    });
+    }));
   }
 
   // Chart 3: Monthly Timeline (stacked bar)
@@ -2631,7 +4536,7 @@ function initOverviewCharts() {
       }
     });
     const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-    new Chart(ctx3.getContext('2d'), {
+    chartInstances.push(new Chart(ctx3.getContext('2d'), {
       type: 'bar',
       data: {
         labels: months,
@@ -2647,7 +4552,7 @@ function initOverviewCharts() {
         maintainAspectRatio: false,
         plugins: { legend: { display: false } }
       }
-    });
+    }));
   }
 
   // Chart 4: Owner Workload (bar)
@@ -2659,7 +4564,7 @@ function initOverviewCharts() {
       ownerCounts[owner] = (ownerCounts[owner] || 0) + 1;
     });
     const topOwners = Object.entries(ownerCounts).sort((a, b) => b[1] - a[1]).slice(0, 8);
-    new Chart(ctx4.getContext('2d'), {
+    chartInstances.push(new Chart(ctx4.getContext('2d'), {
       type: 'bar',
       data: {
         labels: topOwners.map(o => o[0]),
@@ -2675,7 +4580,7 @@ function initOverviewCharts() {
         maintainAspectRatio: false,
         plugins: { legend: { display: false } }
       }
-    });
+    }));
   }
 }
 
@@ -2905,7 +4810,7 @@ function renderProjectDetailItems(project) {
     <table class="data-table">
       <thead>
         <tr>
-          <th>ID</th>
+          <th>編號</th>
           <th>名稱</th>
           <th>負責人</th>
           <th>狀態</th>
@@ -2919,9 +4824,10 @@ function renderProjectDetailItems(project) {
 
   items.forEach(item => {
     const timeline = item.startMonth && item.endMonth ? `M${item.startMonth}-M${item.endMonth}` : '-';
+    const itemIdx = items.indexOf(item) + 1;
     html += `
       <tr>
-        <td>${item.id}</td>
+        <td>${project.code}-${String(itemIdx).padStart(2, '0')}</td>
         <td>${item.name}</td>
         <td>${item.owner || '-'}</td>
         <td>${getStatusBadge(item.status)}</td>
@@ -3057,11 +4963,11 @@ function renderActionDetail(container, params) {
 
         <table class="detail-table">
           <tr>
-            <td class="label">ID</td>
-            <td>${action.id}</td>
+            <td class="label">項目代碼</td>
+            <td>${project.code}</td>
           </tr>
           <tr>
-            <td class="label">Project</td>
+            <td class="label">所屬專案</td>
             <td>${project.code} - ${project.name}</td>
           </tr>
           <tr>
@@ -3294,6 +5200,7 @@ function renderTeamMemberDetail(container, params) {
             <th>Status</th>
             <th>Priority</th>
             <th>Timeline</th>
+            <th>操作</th>
           </tr>
         </thead>
         <tbody>
@@ -3303,6 +5210,7 @@ function renderTeamMemberDetail(container, params) {
   allItems.forEach(item => {
     const project = state.projects.find(p => p.actionItems && p.actionItems.some(a => a.id === item.id));
     const timeline = item.startMonth && item.endMonth ? `M${item.startMonth}-M${item.endMonth}` : '-';
+    const projectId = project ? project.id : '';
 
     html += `
       <tr>
@@ -3311,6 +5219,7 @@ function renderTeamMemberDetail(container, params) {
         <td>${getStatusBadge(item.status)}</td>
         <td>${getPriorityBadge(item.priority)}</td>
         <td>${timeline}</td>
+        <td><button class="btn btn-sm" onclick="openEditPanel('${projectId}', '${item.id}')">✏️ 編輯</button></td>
       </tr>
     `;
   });
@@ -3474,51 +5383,85 @@ function renderSettings(container, params) {
       <!-- LLM Configuration Section -->
       <div class="card">
         <h2>🤖 AI 模型設定</h2>
-        <p class="text-muted">設定 AI Agent 使用的語言模型</p>
+        <p class="text-muted">配置後，右下角的 💬 Talk UI 將啟用智能對話模式</p>
 
         <div class="setting-group">
           <label>Provider</label>
-          <select id="llm-provider" class="input-select" value="${llmConfig.provider}">
-            <option value="None">None</option>
-            <option value="OpenAI">OpenAI</option>
-            <option value="Anthropic">Anthropic</option>
-            <option value="Local">Local Model</option>
+          <select id="llm-provider" class="input-select">
+            <option value="None" ${llmConfig.provider === 'None' || llmConfig.provider === 'none' ? 'selected' : ''}>None（僅本地指令）</option>
+            <option value="OpenAI" ${llmConfig.provider === 'OpenAI' || llmConfig.provider === 'openai' ? 'selected' : ''}>OpenAI</option>
+            <option value="Anthropic" ${llmConfig.provider === 'Anthropic' || llmConfig.provider === 'anthropic' ? 'selected' : ''}>Anthropic (Claude)</option>
+            <option value="Local" ${llmConfig.provider === 'Local' || llmConfig.provider === 'local' || llmConfig.provider === 'ollama' ? 'selected' : ''}>Local Model (Ollama)</option>
           </select>
         </div>
 
         <div class="setting-group">
-          <label>API Endpoint</label>
-          <input type="text" id="llm-endpoint" class="input-text" value="${llmConfig.apiEndpoint}" placeholder="https://api.example.com/v1">
+          <label>API Endpoint <span class="text-muted" style="font-size:11px;">（可選，留空使用預設）</span></label>
+          <input type="text" id="llm-endpoint" class="input-text" value="${llmConfig.apiEndpoint || ''}" placeholder="https://api.openai.com/v1/chat/completions">
         </div>
 
         <div class="setting-group">
           <label>API Key</label>
-          <input type="password" id="llm-key" class="input-text" value="${llmConfig.apiKey}" placeholder="sk-...">
+          <input type="password" id="llm-key" class="input-text" value="${llmConfig.apiKey || ''}" placeholder="sk-... 或 anthropic key">
         </div>
 
         <div class="setting-group">
           <label>Model Name</label>
-          <input type="text" id="llm-model" class="input-text" value="${llmConfig.modelName}" placeholder="gpt-4, claude-3, etc.">
+          <input type="text" id="llm-model" class="input-text" value="${llmConfig.modelName || ''}" placeholder="gpt-4o-mini, claude-sonnet-4-20250514, llama3...">
         </div>
 
-        <div class="setting-group" id="llm-local-group" style="display: ${llmConfig.provider === 'Local' ? 'block' : 'none'};">
-          <label>Local Model Path</label>
-          <input type="text" id="llm-local-path" class="input-text" value="${llmConfig.localPath}" placeholder="/path/to/model">
+        <div class="setting-group" id="llm-local-group" style="display: ${(llmConfig.provider || '').toLowerCase() === 'local' || (llmConfig.provider || '').toLowerCase() === 'ollama' ? 'block' : 'none'};">
+          <label>Local Model Path / Ollama Endpoint</label>
+          <input type="text" id="llm-local-path" class="input-text" value="${llmConfig.localPath || ''}" placeholder="http://localhost:11434">
         </div>
 
         <div class="setting-group">
           <label>Max Tokens</label>
-          <input type="number" id="llm-tokens" class="input-text" value="${llmConfig.maxTokens}" min="100" max="10000" step="100">
+          <input type="number" id="llm-tokens" class="input-text" value="${llmConfig.maxTokens || 2000}" min="100" max="10000" step="100">
         </div>
 
         <div class="setting-group">
-          <label>Temperature (${llmConfig.temperature})</label>
-          <input type="range" id="llm-temp" class="input-range" min="0" max="1" step="0.1" value="${llmConfig.temperature}">
+          <label>Temperature (${llmConfig.temperature || 0.7})</label>
+          <input type="range" id="llm-temp" class="input-range" min="0" max="1" step="0.1" value="${llmConfig.temperature || 0.7}">
         </div>
 
-        <button onclick="testLLMConnection()" class="btn btn-secondary">🔗 Test Connection</button>
-        <button onclick="saveLLMConfig()" class="btn btn-primary">💾 Save</button>
+        <div style="display: flex; gap: 8px; margin-top: 12px;">
+          <button onclick="testLLMConnection()" class="btn btn-secondary">🔗 測試連線</button>
+          <button onclick="saveLLMConfig()" class="btn btn-primary">💾 儲存設定</button>
+        </div>
         <div id="llm-test-result"></div>
+      </div>
+
+      <!-- Talk UI Guide Section -->
+      <div class="card">
+        <h2>💬 Talk UI 使用說明</h2>
+        <p class="text-muted">點擊右下角 💬 按鈕開啟 AI 對話面板</p>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 12px;">
+          <div>
+            <h3 style="font-size: 13px; margin: 0 0 8px; color: var(--text-primary);">📋 查詢指令</h3>
+            <div style="font-size: 12px; color: var(--text-secondary); line-height: 1.8;">
+              <code>專案總覽</code> — 所有專案進度<br>
+              <code>本週摘要</code> — 整體數據摘要<br>
+              <code>逾期任務</code> — 逾期行動項目<br>
+              <code>Agent 狀態</code> — AI Agent 狀態<br>
+              <code>P3</code> — 查看特定專案<br>
+              <code>搜尋 關鍵字</code> — 全域搜尋
+            </div>
+          </div>
+          <div>
+            <h3 style="font-size: 13px; margin: 0 0 8px; color: var(--text-primary);">⚡ 操作指令</h3>
+            <div style="font-size: 12px; color: var(--text-secondary); line-height: 1.8;">
+              <code>更新 P3 進度到 50%</code><br>
+              <code>完成 任務名稱</code><br>
+              <code>啟動 Agent名稱</code><br>
+              <code>暫停 所有</code><br>
+              <code>幫助</code> — 完整指令列表
+            </div>
+          </div>
+        </div>
+        <p style="font-size: 12px; color: var(--text-secondary); margin-top: 12px;">
+          💡 配置上方 LLM API 後，Talk UI 將支援自然語言理解，可用更口語的方式交流。
+        </p>
       </div>
 
       <!-- Data Section -->
@@ -3559,11 +5502,32 @@ function renderSettings(container, params) {
   }
 }
 
-function testLLMConnection() {
+async function testLLMConnection() {
   const resultDiv = document.getElementById('llm-test-result');
-  if (resultDiv) {
-    resultDiv.innerHTML = '<div class="text-muted" style="margin-top: 8px;">✅ Test successful (mock)</div>';
-    setTimeout(() => { resultDiv.innerHTML = ''; }, 3000);
+  if (!resultDiv) return;
+
+  // Save first so callLLM reads current values
+  saveLLMConfig();
+
+  const prov = (state.llmConfig.provider || '').toLowerCase();
+  if (prov === 'none') {
+    resultDiv.innerHTML = '<div style="margin-top:8px;padding:8px 12px;background:#fef3c7;border-radius:8px;font-size:12px;">⚠️ Provider 設定為 None，請先選擇一個 Provider。</div>';
+    return;
+  }
+  if (!state.llmConfig.apiKey && prov !== 'local') {
+    resultDiv.innerHTML = '<div style="margin-top:8px;padding:8px 12px;background:#fef3c7;border-radius:8px;font-size:12px;">⚠️ 請輸入 API Key。</div>';
+    return;
+  }
+
+  resultDiv.innerHTML = '<div style="margin-top:8px;padding:8px 12px;background:#f1f5f9;border-radius:8px;font-size:12px;">⏳ 連線測試中...</div>';
+  try {
+    const reply = await callLLM('請用一句話回覆：連線成功');
+    resultDiv.innerHTML = '<div style="margin-top:8px;padding:8px 12px;background:#dcfce7;border-radius:8px;font-size:12px;">✅ 連線成功！回覆：' + (reply || '').substring(0, 100) + '</div>';
+    // Update Talk UI status
+    const statusEl = document.getElementById('talk-status-text');
+    if (statusEl) statusEl.textContent = prov + ' 已連線';
+  } catch (err) {
+    resultDiv.innerHTML = '<div style="margin-top:8px;padding:8px 12px;background:#fee2e2;border-radius:8px;font-size:12px;">❌ 連線失敗：' + err.message.substring(0, 200) + '</div>';
   }
 }
 
@@ -3662,67 +5626,52 @@ function renderAgentSquad(container, params) {
         </div>
       </div>
 
-      <!-- Agent Cards Grid -->
-      <div class="card-grid">
-        ${agents.map(agent => `
-          <div class="agent-card" onclick="navigateTo('/agents/${agent.id}')">
-            <!-- Status indicator -->
-            <div class="card-status-indicator" style="${getStatusIndicatorStyle(agent.status)}"></div>
-
-            <!-- Agent Identity -->
-            <div class="agent-card-header">
-              <span class="agent-emoji">${agent.emoji || '🤖'}</span>
-              <div class="agent-info">
-                <h3>${agent.name}</h3>
-                <p>${agent.role}</p>
-              </div>
-            </div>
-
-            <!-- Status & Autonomy Badges -->
-            <div class="badge-group">
-              <span class="badge badge-${agent.status}">${getStatusBadge(agent.status)}</span>
-              <span class="badge badge-autonomy">${getAutonomyBadge(agent.autonomy)}</span>
-            </div>
-
-            <!-- LLM Indicator -->
-            ${agent.llmConfig && agent.llmConfig.provider !== 'none' ? `
-              <div class="llm-indicator">🧠 ${agent.llmConfig.model || 'Custom'}</div>
-            ` : ''}
-
-            <!-- Assigned Projects -->
-            ${agent.assignedProjects && agent.assignedProjects.length > 0 ? `
-              <div class="projects-tags">
-                ${agent.assignedProjects.map(pid => `<span class="tag">P${pid}</span>`).join('')}
-              </div>
-            ` : ''}
-
-            <!-- Key Metrics -->
-            <div class="metrics-row">
-              <span>✓ ${agent.metrics?.tasksCompleted || 0} tasks</span>
-              <span>⚡ ${agent.metrics?.reliability || 0}% reliable</span>
-            </div>
-
-            <!-- Last Activity -->
-            <div class="last-activity">
-              ${agent.activityLog && agent.activityLog.length > 0 ? `
-                <small>${agent.activityLog[agent.activityLog.length - 1].message}</small>
-              ` : `<small>無最近活動</small>`}
-            </div>
-
-            <!-- Action Buttons -->
-            <div class="card-actions">
-              <button class="btn-icon" onclick="event.stopPropagation(); handleToggleAgentStatus('${agent.id}')" title="Toggle Status">
-                ${agent.status === 'active' ? '⏸️' : '▶️'}
-              </button>
-              <button class="btn-icon" onclick="event.stopPropagation(); navigateTo('/agents/${agent.id}')" title="Configure">
-                ⚙️
-              </button>
-              <button class="btn-icon" onclick="event.stopPropagation(); handleQuickTaskAssign('${agent.id}')" title="Assign Task">
-                ➕
-              </button>
-            </div>
-          </div>
-        `).join('')}
+      <!-- Agent Table -->
+      <div class="card" style="padding:0; overflow-x:auto;">
+        <table class="agent-table">
+          <thead>
+            <tr>
+              <th style="width:40px;"></th>
+              <th>Agent</th>
+              <th>角色</th>
+              <th>狀態</th>
+              <th>自主權</th>
+              <th>負責專案</th>
+              <th>目前任務</th>
+              <th style="text-align:center;">佇列</th>
+              <th>模型</th>
+              <th style="text-align:center;">完成率</th>
+              <th style="width:100px; text-align:center;">操作</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${agents.map(agent => {
+              const projCodes = (agent.assignedProjects || []).map(pid => { const p = state.projects.find(pr => pr.id === pid); return p ? p.code : null; }).filter(Boolean);
+              const queueLen = agent.taskQueue?.length || 0;
+              const reliPct = agent.metrics?.reliability || 0;
+              const tasksDone = agent.metrics?.tasksCompleted || 0;
+              const modelStr = agent.llmConfig && agent.llmConfig.provider !== 'none' ? (agent.llmConfig.model || agent.llmConfig.provider || '').split('/').pop().substring(0, 18) : '—';
+              return `
+              <tr class="agent-row" onclick="navigateTo('/agents/${agent.id}')" style="cursor:pointer;">
+                <td><span class="agent-emoji" style="font-size:20px;">${agent.emoji || '🤖'}</span></td>
+                <td><strong>${agent.name}</strong></td>
+                <td style="color:var(--text-secondary);font-size:12px;">${agent.role}</td>
+                <td><span class="badge badge-${agent.status}" style="font-size:11px;">${getStatusBadge(agent.status)}</span></td>
+                <td><span style="font-size:11px;">${getAutonomyBadge(agent.autonomy)}</span></td>
+                <td>${projCodes.length > 0 ? projCodes.map(c => '<span class="tag" style="font-size:10px;padding:1px 6px;">' + c + '</span>').join(' ') : '<span style="color:var(--text-secondary);font-size:11px;">—</span>'}</td>
+                <td style="max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px;">${agent.currentTask || '<span style="color:var(--text-secondary);">無</span>'}</td>
+                <td style="text-align:center;"><span class="badge" style="font-size:11px;background:${queueLen > 0 ? 'var(--accent,#6366f1)' : 'var(--bg-secondary,#f1f5f9)'};color:${queueLen > 0 ? '#fff' : 'var(--text-secondary)'};padding:2px 8px;border-radius:10px;">${queueLen}</span></td>
+                <td style="font-size:11px;color:var(--text-secondary);max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${modelStr}</td>
+                <td style="text-align:center;font-size:12px;"><span style="color:${reliPct >= 80 ? '#22c55e' : reliPct >= 50 ? '#f59e0b' : 'var(--text-secondary)'};">${tasksDone > 0 ? reliPct + '%' : '—'}</span></td>
+                <td style="text-align:center;" onclick="event.stopPropagation();">
+                  <button class="btn-icon" onclick="handleToggleAgentStatus('${agent.id}')" title="${agent.status === 'active' ? '暫停' : '啟動'}" style="font-size:14px;">${agent.status === 'active' ? '⏸️' : '▶️'}</button>
+                  <button class="btn-icon" onclick="navigateTo('/agents/${agent.id}')" title="設定" style="font-size:14px;">⚙️</button>
+                  <button class="btn-icon" onclick="handleQuickTaskAssign('${agent.id}')" title="指派任務" style="font-size:14px;">➕</button>
+                </td>
+              </tr>`;
+            }).join('')}
+          </tbody>
+        </table>
       </div>
 
       <!-- Quick Activity Feed -->
@@ -3730,9 +5679,9 @@ function renderAgentSquad(container, params) {
         <div class="feed-header">
           <h3>最近活動</h3>
           <div class="feed-nav">
-            <a onclick="navigateTo('/workflows')" class="feed-link">工作流管理</a>
+            <a onclick="navigateTo('/agents/workflows')" class="feed-link">工作流管理</a>
             <span class="divider">|</span>
-            <a onclick="navigateTo('/activity')" class="feed-link">完整活動紀錄</a>
+            <a onclick="navigateTo('/agents/activity')" class="feed-link">完整活動紀錄</a>
           </div>
         </div>
         <div class="activity-list">
@@ -3769,7 +5718,7 @@ function renderAgentDetail(container, params) {
   }
 
   const projects = state.projects || [];
-  let activeTab = 'queue';
+  const activeTab = state.agentDetailTab || 'queue';
 
   const renderTabs = () => {
     const tabContent = {
@@ -3837,9 +5786,9 @@ function renderAgentDetail(container, params) {
           <div class="projects-checkboxes">
             ${projects.map((proj, idx) => `
               <label class="checkbox-label">
-                <input type="checkbox" ${agent.assignedProjects?.includes(proj.id || idx + 1) ? 'checked' : ''}
+                <input type="checkbox" ${agent.assignedProjects?.includes(proj.id) ? 'checked' : ''}
                        onchange="handleUpdateAgent('${agentId}', {assignedProjects: getSelectedProjects()})">
-                ${proj.name || \`Project \${idx + 1}\`}
+                ${proj.name || ('Project ' + (idx + 1))}
               </label>
             `).join('')}
           </div>
@@ -3941,16 +5890,20 @@ function renderTaskQueueTab(agent) {
         </div>
       </div>
 
+      <div style="display:flex;gap:8px;margin:12px 0;">
+        <button class="btn btn-primary" onclick="executeAllAgentTasks('${agent.id}')" style="font-size:13px;">🚀 全部執行</button>
+      </div>
+
       <div class="add-task-form">
         <h4>➕ 指派新任務</h4>
-        <input type="text" id="newTaskTitle" placeholder="Task Title">
+        <input type="text" id="newTaskTitle" placeholder="任務名稱">
         <select id="newTaskPriority">
           <option>low</option>
           <option selected>medium</option>
           <option>high</option>
         </select>
         <input type="date" id="newTaskDueDate">
-        <button class="btn btn-primary" onclick="handleAddTaskToAgent('${agent.id}')">Add Task</button>
+        <button class="btn btn-primary" onclick="handleAddTaskToAgent('${agent.id}')">新增</button>
       </div>
     </div>
   `;
@@ -3959,14 +5912,33 @@ function renderTaskQueueTab(agent) {
 function renderTaskItem(agentId, task) {
   const statusIcon = {pending: '⭕', in_progress: '🔄', completed: '✅'}[task.status] || '?';
   const priorityColor = {high: '#e74c3c', medium: '#f39c12', low: '#95a5a6'}[task.priority] || '#95a5a6';
+  const hasResult = task.result && task.result.length > 0;
+  const isRunning = task._executing;
+  const canExecute = task.status !== 'completed' && !isRunning;
+  const hasLLM = (() => {
+    const agent = state.agents.find(a => a.id === agentId);
+    const cfg = agent?.llmConfig || state.llmConfig || {};
+    const prov = (cfg.provider || '').toLowerCase();
+    return prov && prov !== 'none' && (cfg.apiKey || prov === 'local' || prov === 'ollama');
+  })();
 
   return `
     <div class="task-item" style="border-left: 4px solid ${priorityColor}">
-      <span onclick="handleTaskStatusChange('${agentId}', '${task.id}')" style="cursor:pointer;" title="Click to change status">
-        ${statusIcon} ${task.title}
-      </span>
-      <span class="priority-badge" style="background-color: ${priorityColor};">${task.priority}</span>
-      <span class="due-date">${task.dueDate || 'No due date'}</span>
+      <div style="display:flex;align-items:center;gap:8px;flex:1;min-width:0;">
+        <span onclick="handleTaskStatusChange('${agentId}', '${task.id}')" style="cursor:pointer;flex-shrink:0;" title="點擊切換狀態">
+          ${statusIcon}
+        </span>
+        <div style="flex:1;min-width:0;">
+          <div style="font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${task.title}</div>
+          ${hasResult ? '<div class="task-result-preview" onclick="showTaskResult(\'' + agentId + '\',\'' + task.id + '\')" style="font-size:11px;color:var(--accent);cursor:pointer;margin-top:2px;">📄 查看 AI 執行結果 →</div>' : ''}
+          ${isRunning ? '<div style="font-size:11px;color:#f59e0b;margin-top:2px;">⏳ AI 執行中...</div>' : ''}
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:6px;flex-shrink:0;">
+        <span class="priority-badge" style="background-color: ${priorityColor};">${task.priority}</span>
+        <span class="due-date" style="font-size:11px;">${task.dueDate || ''}</span>
+        ${canExecute && hasLLM ? '<button class="btn-icon" onclick="event.stopPropagation();executeAgentTask(\'' + agentId + '\',\'' + task.id + '\')" title="AI 執行" style="font-size:14px;background:var(--accent-light,#eff6ff);border-radius:6px;padding:2px 6px;">🚀</button>' : ''}
+      </div>
     </div>
   `;
 }
@@ -4346,7 +6318,7 @@ function renderNewAgentForm() {
 
 function handleSaveNewAgent() {
   const newAgent = {
-    id: 'agent-' + String(state.agents.length + 1).padStart(3, '0'),
+    id: crypto.randomUUID(),
     emoji: document.getElementById('formEmoji').value || '🤖',
     name: document.getElementById('formName').value,
     role: document.getElementById('formRole').value,
@@ -4563,9 +6535,11 @@ function handleClearActivityLog(agentId) {
 }
 
 function switchAgentTab(tabName, agentId) {
-  // This would normally update the active tab and re-render
-  // For now, a simplified version
-  handleRoute(`#/agents/${agentId}`);
+  state.agentDetailTab = tabName;
+  const container = document.getElementById('view-container');
+  const agent = state.agents.find(a => a.id === agentId);
+  if (!agent || !container) return;
+  renderAgentDetail(container, { id: agentId });
 }
 
 function handleCreateWorkflow() {
@@ -4583,7 +6557,7 @@ function renderWorkflowForm() {
 
 function handleSaveWorkflow() {
   const newWorkflow = {
-    id: 'wf-' + Date.now(),
+    id: crypto.randomUUID(),
     name: document.getElementById('wfName').value,
     description: document.getElementById('wfDesc').value,
     trigger: { type: document.getElementById('wfTrigger').value, label: 'Weekly' },
@@ -4611,17 +6585,145 @@ function handleToggleWorkflow(workflowId) {
 function handleDeleteWorkflow(workflowId) {
   if (confirm('Delete workflow?')) {
     state.workflows = state.workflows.filter(w => w.id !== workflowId);
+    deleteFromCloud('workflows', workflowId);
     saveState();
     handleRoute('#/workflows');
   }
 }
 
-function handleManualTrigger(workflowId) {
-  showToast('Workflow triggered');
+async function handleManualTrigger(workflowId) {
+  const wf = state.workflows.find(w => w.id === workflowId);
+  if (!wf) { showToast('Workflow not found', 'error'); return; }
+  if (wf.status !== 'active') { showToast('工作流已暫停，請先啟動', 'warning'); return; }
+
+  const steps = wf.steps || [];
+  wf.lastRun = new Date().toISOString().replace('T', ' ').substring(0, 16);
+  if (!wf.runCount) wf.runCount = 0;
+  wf.runCount++;
+
+  // Distribute tasks to agents
+  const newTaskIds = [];
+  steps.forEach(step => {
+    const agent = state.agents.find(a => a.name.toLowerCase().includes(step.agent.toLowerCase()));
+    if (agent) {
+      if (!agent.taskQueue) agent.taskQueue = [];
+      const taskId = crypto.randomUUID();
+      agent.taskQueue.push({
+        id: taskId, title: `[${wf.name}] ${step.action}`,
+        status: 'pending', priority: 'high', assignedAt: new Date().toISOString(), workflowId: wf.id
+      });
+      agent.currentTask = `[${wf.name}] ${step.action}`;
+      agent.status = 'active';
+      newTaskIds.push({ agentId: agent.id, taskId });
+    }
+  });
+
+  saveState();
+  logActivity('workflow', wf.id, 'workflow_triggered', { name: wf.name, steps: steps.length });
+  pushNotification('工作流觸發', `${wf.name} — ${steps.length} 個步驟已分派`);
+  handleRoute(window.location.hash);
+
+  // Auto-execute if LLM is configured — ask user first
+  const hasLLM = (() => {
+    const cfg = state.llmConfig || {};
+    const prov = (cfg.provider || '').toLowerCase();
+    return prov && prov !== 'none' && (cfg.apiKey || prov === 'local' || prov === 'ollama');
+  })();
+
+  if (hasLLM && newTaskIds.length > 0) {
+    const doExec = confirm(`已分派 ${newTaskIds.length} 個任務。\n是否讓 AI Agent 自動執行這些任務？`);
+    if (doExec) {
+      for (const { agentId, taskId } of newTaskIds) {
+        await executeAgentTask(agentId, taskId);
+      }
+      showToast(`🎉 工作流「${wf.name}」所有任務已執行完成`, 'success');
+    }
+  }
 }
 
 function handleEditWorkflow(workflowId) {
-  showToast('Edit workflow (coming soon)');
+  const wf = state.workflows.find(w => w.id === workflowId);
+  if (!wf) return;
+  const agents = state.agents || [];
+  const stepsHtml = (wf.steps || []).map((step, idx) => `
+    <div class="form-group" style="display:flex;gap:8px;align-items:center;">
+      <span style="font-weight:600;min-width:24px;">${idx + 1}.</span>
+      <select id="wfEditAgent${idx}" style="flex:1;">
+        ${agents.map(a => `<option value="${a.name}" ${a.name === step.agent ? 'selected' : ''}>${a.emoji} ${a.name}</option>`).join('')}
+      </select>
+      <input type="text" id="wfEditAction${idx}" value="${step.action}" placeholder="Action" style="flex:2;">
+      <button class="btn-icon" onclick="this.parentElement.remove()" title="刪除步驟">🗑️</button>
+    </div>
+  `).join('');
+
+  showModal('編輯工作流 — ' + wf.name, `
+    <div class="form-group">
+      <label>名稱</label>
+      <input type="text" id="wfEditName" value="${wf.name}">
+    </div>
+    <div class="form-group">
+      <label>說明</label>
+      <textarea id="wfEditDesc">${wf.description || ''}</textarea>
+    </div>
+    <div class="form-group">
+      <label>觸發方式</label>
+      <select id="wfEditTrigger">
+        <option value="schedule" ${wf.trigger?.type === 'schedule' ? 'selected' : ''}>排程</option>
+        <option value="event" ${wf.trigger?.type === 'event' ? 'selected' : ''}>事件觸發</option>
+        <option value="manual" ${wf.trigger?.type === 'manual' ? 'selected' : ''}>手動</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>步驟</label>
+      <div id="wfEditSteps">${stepsHtml}</div>
+      <button class="btn btn-secondary" style="margin-top:8px;font-size:12px;" onclick="addWorkflowStep()">+ 新增步驟</button>
+    </div>
+    <button class="btn btn-primary" onclick="handleSaveEditedWorkflow('${workflowId}')">儲存變更</button>
+  `, { width: '550px' });
+}
+
+function addWorkflowStep() {
+  const container = document.getElementById('wfEditSteps');
+  if (!container) return;
+  const agents = state.agents || [];
+  const idx = container.children.length;
+  const div = document.createElement('div');
+  div.className = 'form-group';
+  div.style = 'display:flex;gap:8px;align-items:center;';
+  div.innerHTML = `
+    <span style="font-weight:600;min-width:24px;">${idx + 1}.</span>
+    <select id="wfEditAgent${idx}" style="flex:1;">
+      ${agents.map(a => '<option value="' + a.name + '">' + a.emoji + ' ' + a.name + '</option>').join('')}
+    </select>
+    <input type="text" id="wfEditAction${idx}" placeholder="Action" style="flex:2;">
+    <button class="btn-icon" onclick="this.parentElement.remove()" title="刪除步驟">🗑️</button>
+  `;
+  container.appendChild(div);
+}
+
+function handleSaveEditedWorkflow(workflowId) {
+  const wf = state.workflows.find(w => w.id === workflowId);
+  if (!wf) return;
+  wf.name = document.getElementById('wfEditName')?.value || wf.name;
+  wf.description = document.getElementById('wfEditDesc')?.value || '';
+  wf.trigger = { type: document.getElementById('wfEditTrigger')?.value || 'manual', label: document.getElementById('wfEditTrigger')?.selectedOptions[0]?.textContent || 'Manual' };
+  // Collect steps
+  const stepsContainer = document.getElementById('wfEditSteps');
+  const newSteps = [];
+  if (stepsContainer) {
+    Array.from(stepsContainer.children).forEach((el, idx) => {
+      const agentSel = el.querySelector('select');
+      const actionInput = el.querySelector('input[type="text"]');
+      if (agentSel && actionInput && actionInput.value.trim()) {
+        newSteps.push({ agent: agentSel.value, action: actionInput.value.trim() });
+      }
+    });
+  }
+  wf.steps = newSteps;
+  saveState();
+  closeModal();
+  showToast('工作流已更新');
+  handleRoute(window.location.hash);
 }
 
 function handleUseGlobalConfig(agentId) {
@@ -4634,20 +6736,34 @@ function handleUseGlobalConfig(agentId) {
 }
 
 function handleLLMConfigChange(agentId) {
-  // Update LLM config on change
+  const agent = state.agents.find(a => a.id === agentId);
+  if (!agent) return;
+  if (!agent.llmConfig) agent.llmConfig = {};
+  const provEl = document.getElementById('llmProvider');
+  const modelEl = document.getElementById('llmModel');
+  const tempEl = document.getElementById('llmTemp');
+  if (provEl) agent.llmConfig.provider = provEl.value;
+  if (modelEl) agent.llmConfig.model = modelEl.value;
+  if (tempEl) agent.llmConfig.temperature = parseFloat(tempEl.value);
+  saveState();
 }
 
 function reloadActivityPage() {
-  handleRoute('#/activity');
+  const container = document.getElementById('view-container');
+  if (container) renderAgentActivity(container, {});
 }
 
 function filterActivityLog() {
-  // Filter implementation
+  reloadActivityPage();
 }
 
 function getSelectedProjects() {
-  // Helper to get selected projects
-  return [];
+  const checkboxes = document.querySelectorAll('.checkbox-label input[type="checkbox"]');
+  const ids = [];
+  checkboxes.forEach((cb, idx) => {
+    if (cb.checked && state.projects[idx]) ids.push(state.projects[idx].id);
+  });
+  return ids;
 }
 
     
@@ -4659,14 +6775,1198 @@ function toggleTheme() {
   setTheme(next);
 }
 
+// ==================== TALK UI ENGINE ====================
+
+// --- Panel toggle ---
+function toggleTalkPanel() {
+  const panel = document.getElementById('talk-panel');
+  const fab = document.getElementById('talk-fab');
+  const fabIcon = document.getElementById('talk-fab-icon');
+  state.talkPanelOpen = !state.talkPanelOpen;
+  panel.classList.toggle('visible', state.talkPanelOpen);
+  fab.classList.toggle('open', state.talkPanelOpen);
+  fabIcon.textContent = state.talkPanelOpen ? '✕' : '💬';
+  fab.classList.remove('has-unread');
+  if (state.talkPanelOpen) {
+    if (state.chatMessages.length === 0) initChatWelcome();
+    const input = document.getElementById('talk-input');
+    setTimeout(() => input && input.focus(), 300);
+  }
+}
+
+function initChatWelcome() {
+  appendBotMessage('👋 你好！我是 DTO Assistant，你的數位轉型作業助手。\n\n📋 **查詢** — 專案總覽、本週摘要、逾期任務\n🤖 **Agent** — Agent 狀態、指派任務\n⚡ **工作流** — 工作流列表、執行工作流\n✏️ **操作** — 更新進度、完成任務\n\n輸入「幫助」查看完整指令列表。');
+}
+
+// --- Message rendering ---
+function renderChatMessages() {
+  const container = document.getElementById('talk-messages');
+  if (!container) return;
+  container.innerHTML = state.chatMessages.map(m => {
+    const timeStr = new Date(m.ts).toLocaleTimeString('zh-TW', { hour: '2-digit', minute: '2-digit' });
+    if (m.role === 'system') {
+      return `<div class="talk-msg system">${m.text}</div>`;
+    }
+    const cls = m.role === 'user' ? 'user' : 'bot';
+    const actionsHtml = m.actions ? `<div class="msg-actions">${m.actions.map(a => `<button onclick="sendSuggestion('${a.replace(/'/g, "\\'")}')">${a}</button>`).join('')}</div>` : '';
+    return `<div class="talk-msg ${cls}">${formatMsgText(m.text)}<span class="msg-time">${timeStr}</span>${actionsHtml}</div>`;
+  }).join('');
+  container.scrollTop = container.scrollHeight;
+}
+
+function formatMsgText(text) {
+  return text
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/\n/g, '<br>')
+    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    .replace(/`(.+?)`/g, '<code style="background:rgba(99,102,241,0.1);padding:1px 4px;border-radius:3px;font-size:12px;">$1</code>');
+}
+
+function appendUserMessage(text) {
+  state.chatMessages.push({ role: 'user', text, ts: Date.now() });
+  renderChatMessages();
+}
+
+function appendBotMessage(text, actions) {
+  state.chatMessages.push({ role: 'bot', text, ts: Date.now(), actions: actions || null });
+  renderChatMessages();
+}
+
+function appendSystemMessage(text) {
+  state.chatMessages.push({ role: 'system', text, ts: Date.now() });
+  renderChatMessages();
+}
+
+function showTyping(show) {
+  const el = document.getElementById('talk-typing');
+  if (el) el.classList.toggle('show', !!show);
+}
+
+// --- Input handling ---
+function handleTalkKeydown(e) {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    sendTalkMessage();
+  }
+}
+
+function autoResizeTalkInput(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 80) + 'px';
+}
+
+function sendSuggestion(text) {
+  const input = document.getElementById('talk-input');
+  if (input) input.value = text;
+  sendTalkMessage();
+}
+
+async function sendTalkMessage() {
+  const input = document.getElementById('talk-input');
+  const text = (input.value || '').trim();
+  if (!text) return;
+  input.value = '';
+  input.style.height = 'auto';
+  appendUserMessage(text);
+  showTyping(true);
+
+  // Check if LLM is configured (provider values may be capitalized from Settings UI)
+  const prov = (state.llmConfig && state.llmConfig.provider || '').toLowerCase();
+  const hasLLM = prov && prov !== 'none' && state.llmConfig.apiKey;
+
+  await new Promise(r => setTimeout(r, 400 + Math.random() * 400));
+
+  // Try local command first
+  const localResult = parseAndExecuteCommand(text);
+  if (localResult) {
+    // Handle async commands
+    if (localResult.reply === '__ASYNC_ACTIVITY__') {
+      const asyncResult = await cmdRecentActivity();
+      showTyping(false);
+      appendBotMessage(asyncResult.reply, asyncResult.actions || null);
+      return;
+    }
+    showTyping(false);
+    appendBotMessage(localResult.reply, localResult.actions || null);
+    return;
+  }
+
+  // If LLM configured, route to LLM
+  if (hasLLM) {
+    try {
+      const llmReply = await callLLM(text);
+      showTyping(false);
+      appendBotMessage(llmReply);
+    } catch (err) {
+      showTyping(false);
+      appendBotMessage('⚠️ LLM 呼叫失敗：' + err.message + '\n\n已切換回本地指令模式。');
+    }
+    return;
+  }
+
+  // Fallback: no LLM, not a recognized command
+  showTyping(false);
+  appendBotMessage('🤔 我還不太理解這個指令。目前支援以下操作：\n\n• **專案總覽** — 查看所有專案\n• **更新 PX 進度到 N%** — 更新進度\n• **逾期任務** — 查看逾期項目\n• **本週摘要** — 整體摘要\n• **Agent 狀態** — 查看 Agent\n• **啟動/暫停 Agent XXX**\n• **完成 任務名稱**\n\n如需更智能的對話，請在「設定」中配置 LLM API Key。', ['專案總覽', '本週摘要', '逾期任務']);
+}
+
+function clearChatHistory() {
+  state.chatMessages = [];
+  renderChatMessages();
+  initChatWelcome();
+}
+
+// ==================== LOCAL COMMAND PARSER ====================
+
+function parseAndExecuteCommand(text) {
+  const t = text.trim();
+
+  // --- 專案總覽 ---
+  if (/^(專案總覽|所有專案|項目列表|project\s*(list|overview)?|dashboard)/i.test(t)) {
+    return cmdProjectOverview();
+  }
+
+  // --- 本週摘要 / 摘要 ---
+  if (/^(本週摘要|摘要|weekly\s*summary|summary)/i.test(t)) {
+    return cmdWeeklySummary();
+  }
+
+  // --- 逾期任務 ---
+  if (/^(逾期任務|逾期|overdue|過期|延遲)/i.test(t)) {
+    return cmdOverdueItems();
+  }
+
+  // --- Agent 狀態 ---
+  if (/^(agent\s*(狀態|status|列表|list)?|所有\s*agent)/i.test(t)) {
+    return cmdAgentStatus();
+  }
+
+  // --- 更新進度: "更新 P3 進度到 50%" or "P3 進度 50" ---
+  const progressMatch = t.match(/(?:更新|設定|set)?\s*(P\d+)\s*(?:進度|progress)?\s*(?:到|至|to|=|：|:)?\s*(\d+)\s*%?/i);
+  if (progressMatch) {
+    return cmdUpdateProgress(progressMatch[1].toUpperCase(), parseInt(progressMatch[2]));
+  }
+
+  // --- 完成任務: "完成 XXX" ---
+  const completeMatch = t.match(/^(?:完成|標記完成|mark\s*done|done|close)\s+(.+)/i);
+  if (completeMatch) {
+    return cmdCompleteAction(completeMatch[1].trim());
+  }
+
+  // --- 啟動 Agent ---
+  const activateMatch = t.match(/^(?:啟動|activate|start|啟用)\s+(?:agent\s*)?(.+)/i);
+  if (activateMatch) {
+    return cmdToggleAgent(activateMatch[1].trim(), 'active');
+  }
+
+  // --- 暫停 Agent ---
+  const pauseMatch = t.match(/^(?:暫停|pause|stop|停用)\s+(?:agent\s*)?(.+)/i);
+  if (pauseMatch) {
+    return cmdToggleAgent(pauseMatch[1].trim(), 'paused');
+  }
+
+  // --- 查詢特定專案: "P3 狀態" or "查詢 P3" ---
+  const queryProjMatch = t.match(/^(?:查詢|query|look\s*up)?\s*(P\d+)\s*(?:狀態|status|進度|detail|詳情)?$/i);
+  if (queryProjMatch) {
+    return cmdProjectDetail(queryProjMatch[1].toUpperCase());
+  }
+
+  // --- 搜尋: "搜尋 XXX" ---
+  const searchMatch = t.match(/^(?:搜尋|搜索|search|find|找)\s+(.+)/i);
+  if (searchMatch) {
+    return cmdSearch(searchMatch[1].trim());
+  }
+
+  // --- 指派任務給 Agent ---
+  const assignMatch = t.match(/^(?:指派|assign|分配)\s+(.+?)\s+(?:任務|task|做)\s+(.+)/i);
+  if (assignMatch) {
+    return cmdAssignTask(t);
+  }
+
+  // --- 查看 Agent 任務 ---
+  const viewTaskMatch = t.match(/^(?:查看|view|show|看)\s+(.+?)(?:\s*(?:的任務|任務|tasks))$/i);
+  if (viewTaskMatch) {
+    return cmdViewAgentTasks(t);
+  }
+
+  // --- 工作流列表 ---
+  if (/^(工作流列表|工作流|workflows?|流程列表|所有工作流)/i.test(t)) {
+    return cmdWorkflowList();
+  }
+
+  // --- 執行工作流 ---
+  const triggerWfMatch = t.match(/^(?:執行|觸發|trigger|run|啟動工作流)\s+(.+)/i);
+  if (triggerWfMatch) {
+    // Check if it's a workflow name vs agent name
+    const wfName = triggerWfMatch[1].trim();
+    const wf = state.workflows.find(w => w.name.toLowerCase().includes(wfName.toLowerCase()));
+    if (wf) return cmdTriggerWorkflow(wfName);
+    // If starts with "啟動工作流", parse differently
+    if (/^啟動工作流/.test(t)) {
+      return cmdToggleWorkflow(t.replace(/^啟動工作流\s*/, ''), 'active');
+    }
+  }
+
+  // --- 暫停工作流 ---
+  const pauseWfMatch = t.match(/^暫停工作流\s+(.+)/i);
+  if (pauseWfMatch) {
+    return cmdToggleWorkflow(pauseWfMatch[1].trim(), 'paused');
+  }
+
+  // --- 通知 ---
+  if (/^(通知|notifications?|🔔)/i.test(t)) {
+    return cmdNotifications();
+  }
+
+  // --- 活動記錄 ---
+  if (/^(活動記錄|活動日誌|activity\s*log|recent\s*activity|操作紀錄)/i.test(t)) {
+    return { reply: '__ASYNC_ACTIVITY__' };
+  }
+
+  // --- 執行 Agent 任務: "執行 AgentName 任務" or "run AgentName" ---
+  const execAgentMatch = t.match(/^(?:執行|run|跑|讓)\s+(.+?)(?:\s*(?:的|all|所有|全部)?(?:任務|tasks?|工作))?$/i);
+  if (execAgentMatch) {
+    const name = execAgentMatch[1].trim();
+    const agent = state.agents.find(a => a.name.toLowerCase().includes(name.toLowerCase()));
+    if (agent) {
+      const pending = (agent.taskQueue || []).filter(t => t.status === 'pending' || t.status === 'in_progress');
+      if (pending.length === 0) return { reply: `${agent.emoji} ${agent.name} 目前沒有待執行的任務。` };
+      // Trigger async execution
+      executeAllAgentTasks(agent.id);
+      return { reply: `🚀 開始執行 ${agent.emoji} **${agent.name}** 的 ${pending.length} 項任務...\n\n完成後會透過通知告知結果。` };
+    }
+    // Check if it's a workflow name (handled above), else fall through
+  }
+
+  // --- 查看執行結果: "結果 AgentName" ---
+  const resultMatch = t.match(/^(?:結果|result|成果|報告)\s+(.+)/i);
+  if (resultMatch) {
+    return cmdAgentResults(resultMatch[1].trim());
+  }
+
+  // --- 績效報告: "績效 AgentName" ---
+  const perfMatch = t.match(/^(?:績效|performance|表現|效能)\s+(.+)/i);
+  if (perfMatch) {
+    return cmdAgentPerformance(perfMatch[1].trim());
+  }
+
+  // --- 幫助 ---
+  if (/^(help|幫助|指令|commands|怎麼用|使用說明|\/help)/i.test(t)) {
+    return cmdHelp();
+  }
+
+  // Not matched
+  return null;
+}
+
+// ==================== COMMAND EXECUTORS ====================
+
+function cmdProjectOverview() {
+  const lines = state.projects.map(p => {
+    const bar = progressBar(p.progress);
+    return `**${p.code}** ${p.name}\n${bar} ${p.progress}%`;
+  });
+  return { reply: '📋 **專案總覽**\n\n' + lines.join('\n\n') };
+}
+
+function progressBar(pct) {
+  const filled = Math.round(pct / 10);
+  return '█'.repeat(filled) + '░'.repeat(10 - filled);
+}
+
+function cmdWeeklySummary() {
+  const totalProjects = state.projects.length;
+  const avgProgress = Math.round(state.projects.reduce((s, p) => s + p.progress, 0) / totalProjects);
+  const totalActions = state.projects.reduce((s, p) => s + (p.actions || []).length, 0);
+  const completedActions = state.projects.reduce((s, p) => s + (p.actions || []).filter(a => a.status === 'completed').length, 0);
+  const overdueActions = state.projects.reduce((s, p) => s + (p.actions || []).filter(a => a.status !== 'completed' && a.dueDate && new Date(a.dueDate) < new Date()).length, 0);
+  const activeAgents = state.agents.filter(a => a.status === 'active').length;
+
+  let risk = state.projects.filter(p => p.progress < 30).map(p => `• ${p.code} ${p.name}（${p.progress}%）`).join('\n');
+
+  let reply = `📊 **本週摘要**\n\n`;
+  reply += `**專案概況**：${totalProjects} 個專案，平均進度 ${avgProgress}%\n`;
+  reply += `**行動項目**：共 ${totalActions} 項，已完成 ${completedActions} 項\n`;
+  reply += `**逾期項目**：${overdueActions} 項\n`;
+  reply += `**AI Agents**：${activeAgents}/${state.agents.length} 個運作中\n`;
+  if (risk) reply += `\n⚠️ **需關注專案**：\n${risk}`;
+
+  return { reply, actions: ['逾期任務', '專案總覽', 'Agent 狀態'] };
+}
+
+function cmdOverdueItems() {
+  const now = new Date();
+  const items = [];
+  state.projects.forEach(p => {
+    (p.actions || []).forEach(a => {
+      if (a.status !== 'completed' && a.dueDate && new Date(a.dueDate) < now) {
+        const days = Math.floor((now - new Date(a.dueDate)) / 86400000);
+        items.push({ project: p.code, name: a.name, days, priority: a.priority || '-' });
+      }
+    });
+  });
+
+  if (items.length === 0) {
+    return { reply: '✅ 目前沒有逾期的行動項目！', actions: ['專案總覽', '本週摘要'] };
+  }
+
+  items.sort((a, b) => b.days - a.days);
+  const lines = items.slice(0, 15).map(i =>
+    `• **${i.project}** ${i.name} — 逾期 ${i.days} 天 [${i.priority}]`
+  );
+  return { reply: `⚠️ **逾期任務（${items.length} 項）**\n\n${lines.join('\n')}${items.length > 15 ? `\n\n...還有 ${items.length - 15} 項` : ''}` };
+}
+
+function cmdAgentStatus() {
+  const lines = state.agents.map(a => {
+    const emoji = a.status === 'active' ? '🟢' : a.status === 'paused' ? '🟡' : '🔴';
+    return `${emoji} **${a.name}** (${a.role}) — ${a.status}\n   任務: ${a.currentTask || '無'}`;
+  });
+  return { reply: '🤖 **Agent 狀態**\n\n' + lines.join('\n\n'), actions: ['啟動所有 Agent', '暫停所有 Agent'] };
+}
+
+function cmdUpdateProgress(code, pct) {
+  const pctClamped = Math.max(0, Math.min(100, pct));
+  const proj = state.projects.find(p => p.code === code);
+  if (!proj) return { reply: `❌ 找不到專案 **${code}**。可用的代碼：${state.projects.map(p => p.code).join(', ')}` };
+  const oldPct = proj.progress;
+  proj.progress = pctClamped;
+  saveState();
+  handleRoute(window.location.hash);
+  logActivity('project', proj.id, 'progress_updated', { code: proj.code, from: oldPct, to: pctClamped });
+  pushNotification('進度更新', `${proj.code} ${proj.name}: ${oldPct}% → ${pctClamped}%`);
+  return { reply: `✅ 已更新 **${proj.code} ${proj.name}** 進度：${oldPct}% → **${pctClamped}%**\n${progressBar(pctClamped)} ${pctClamped}%` };
+}
+
+function cmdCompleteAction(name) {
+  let found = null;
+  let projCode = '';
+  for (const p of state.projects) {
+    for (const a of (p.actions || [])) {
+      if (a.name && a.name.includes(name)) {
+        found = a;
+        projCode = p.code;
+        break;
+      }
+    }
+    if (found) break;
+  }
+  if (!found) return { reply: `❌ 找不到包含「${name}」的任務。請嘗試更精確的名稱。`, actions: ['逾期任務'] };
+  if (found.status === 'completed') return { reply: `ℹ️ **${found.name}** 已經是完成狀態了。` };
+  found.status = 'completed';
+  saveState();
+  handleRoute(window.location.hash);
+  logActivity('action_item', null, 'action_completed', { name: found.name, project: projCode });
+  pushNotification('任務完成', `${projCode}: ${found.name}`);
+  return { reply: `✅ 已將 **${projCode}** 的任務「${found.name}」標記為完成！` };
+}
+
+function cmdToggleAgent(name, targetStatus) {
+  // Handle "所有" (all) agents
+  if (/^(所有|all)$/i.test(name)) {
+    state.agents.forEach(a => a.status = targetStatus);
+    saveState();
+    handleRoute(window.location.hash);
+    const verb = targetStatus === 'active' ? '啟動' : '暫停';
+    return { reply: `✅ 已${verb}所有 Agent（${state.agents.length} 個）` };
+  }
+
+  const agent = state.agents.find(a =>
+    a.name.toLowerCase().includes(name.toLowerCase()) ||
+    a.role.toLowerCase().includes(name.toLowerCase())
+  );
+  if (!agent) return { reply: `❌ 找不到名稱包含「${name}」的 Agent。\n\n可用的 Agent：${state.agents.map(a => a.name).join(', ')}` };
+
+  const oldStatus = agent.status;
+  agent.status = targetStatus;
+  saveState();
+  handleRoute(window.location.hash);
+  logActivity('agent', agent.id, 'agent_status_changed', { name: agent.name, from: oldStatus, to: targetStatus });
+  const verb = targetStatus === 'active' ? '啟動' : '暫停';
+  return { reply: `✅ 已${verb} **${agent.name}**：${oldStatus} → **${targetStatus}**` };
+}
+
+function cmdProjectDetail(code) {
+  const proj = state.projects.find(p => p.code === code);
+  if (!proj) return { reply: `❌ 找不到專案 **${code}**。` };
+  const actions = proj.actions || [];
+  const completed = actions.filter(a => a.status === 'completed').length;
+  const overdue = actions.filter(a => a.status !== 'completed' && a.dueDate && new Date(a.dueDate) < new Date()).length;
+
+  let reply = `📋 **${proj.code} ${proj.name}**\n\n`;
+  reply += `${progressBar(proj.progress)} **${proj.progress}%**\n`;
+  reply += `負責人：${proj.owner || '-'}\n`;
+  reply += `行動項目：${actions.length} 項（已完成 ${completed}，逾期 ${overdue}）\n`;
+  if (proj.startDate) reply += `起始：${proj.startDate}\n`;
+  if (proj.endDate) reply += `預計完成：${proj.endDate}\n`;
+
+  if (overdue > 0) {
+    const overdueItems = actions.filter(a => a.status !== 'completed' && a.dueDate && new Date(a.dueDate) < new Date()).slice(0, 5);
+    reply += `\n⚠️ **逾期項目**：\n${overdueItems.map(a => `• ${a.name}`).join('\n')}`;
+  }
+
+  return { reply, actions: [`更新 ${code} 進度到 ${proj.progress + 5}%`] };
+}
+
+function cmdSearch(query) {
+  const q = query.toLowerCase();
+  const results = [];
+
+  // Search projects
+  state.projects.forEach(p => {
+    if ((p.name && p.name.toLowerCase().includes(q)) || (p.code && p.code.toLowerCase().includes(q))) {
+      results.push(`📋 **${p.code}** ${p.name} (${p.progress}%)`);
+    }
+    (p.actions || []).forEach(a => {
+      if (a.name && a.name.toLowerCase().includes(q)) {
+        results.push(`📝 **${p.code}** → ${a.name} [${a.status}]`);
+      }
+    });
+  });
+
+  // Search agents
+  state.agents.forEach(a => {
+    if ((a.name && a.name.toLowerCase().includes(q)) || (a.role && a.role.toLowerCase().includes(q))) {
+      results.push(`🤖 **${a.name}** (${a.role}) — ${a.status}`);
+    }
+  });
+
+  if (results.length === 0) return { reply: `🔍 找不到包含「${query}」的結果。` };
+  return { reply: `🔍 **搜尋「${query}」結果（${results.length} 筆）**\n\n${results.slice(0, 20).join('\n')}${results.length > 20 ? `\n\n...還有 ${results.length - 20} 筆` : ''}` };
+}
+
+function cmdAgentResults(name) {
+  const agent = state.agents.find(a => a.name.toLowerCase().includes(name.toLowerCase()));
+  if (!agent) return { reply: `❌ 找不到 Agent「${name}」` };
+  const withResults = (agent.taskQueue || []).filter(t => t.result);
+  if (withResults.length === 0) return { reply: `${agent.emoji} **${agent.name}** 尚無 AI 執行結果。\n\n💡 使用 \`執行 ${agent.name}\` 讓 Agent 自動執行待處理任務。` };
+  const lines = withResults.slice(-5).reverse().map(t => {
+    const time = t.completedAt ? new Date(t.completedAt).toLocaleString('zh-TW', { month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : '—';
+    const preview = t.result.replace(/\n/g, ' ').substring(0, 80);
+    return `**${t.title}** (${t.executionTime || '—'}, ${time})\n   ${preview}...`;
+  });
+  return { reply: `📄 **${agent.emoji} ${agent.name} 最近執行結果**\n\n${lines.join('\n\n')}\n\n💡 在 Agent 詳情頁面可查看完整結果。` };
+}
+
+function cmdAgentPerformance(name) {
+  const agent = state.agents.find(a => a.name.toLowerCase().includes(name.toLowerCase()));
+  if (!agent) return { reply: `❌ 找不到 Agent「${name}」` };
+  const m = agent.metrics || {};
+  const queue = agent.taskQueue || [];
+  const total = queue.length;
+  const done = queue.filter(t => t.status === 'completed').length;
+  const failed = queue.filter(t => t.error).length;
+  const pending = queue.filter(t => t.status === 'pending').length;
+  const inProg = queue.filter(t => t.status === 'in_progress').length;
+  const withResults = queue.filter(t => t.result);
+  const avgTime = withResults.length > 0 ? (withResults.reduce((s, t) => s + parseFloat(t.executionTime || '0'), 0) / withResults.length).toFixed(1) : '—';
+
+  return {
+    reply: `📊 **${agent.emoji} ${agent.name} 績效報告**\n\n` +
+      `**基本資訊**\n` +
+      `角色：${agent.role}\n` +
+      `狀態：${agent.status === 'active' ? '✅ 運行中' : '⏸️ 暫停'}\n` +
+      `自主層級：${agent.autonomy}\n\n` +
+      `**任務統計**\n` +
+      `總任務：${total} | ✅ 完成：${done} | 🔄 進行中：${inProg} | ⏳ 待處理：${pending} | ❌ 失敗：${failed}\n` +
+      `完成率：${total > 0 ? Math.round((done / total) * 100) : 0}%\n` +
+      `平均執行時間：${avgTime}s\n` +
+      `可靠度：${m.reliability || 0}%\n\n` +
+      `**負責專案**\n` +
+      `${(agent.assignedProjects || []).map(pid => { const p = state.projects.find(pr => pr.id === pid); return p ? p.code + ' ' + p.name : null; }).filter(Boolean).join('\n') || '無'}`
+  };
+}
+
+function cmdHelp() {
+  return {
+    reply: `📖 **DTO Assistant 指令手冊**\n\n` +
+      `**📋 查詢類**\n` +
+      `• \`專案總覽\` — 列出所有專案及進度\n` +
+      `• \`本週摘要\` — 整體數據摘要\n` +
+      `• \`逾期任務\` — 查看逾期行動項目\n` +
+      `• \`Agent 狀態\` — 查看 AI Agent 狀態\n` +
+      `• \`P3\` 或 \`查詢 P3\` — 查看特定專案\n` +
+      `• \`搜尋 關鍵字\` — 全域搜尋\n` +
+      `• \`工作流列表\` — 查看所有工作流\n` +
+      `• \`通知\` — 查看最近通知\n` +
+      `• \`活動記錄\` — 查看操作歷史\n\n` +
+      `**⚡ 操作類**\n` +
+      `• \`更新 P3 進度到 50%\` — 更新專案進度\n` +
+      `• \`完成 任務名稱\` — 標記任務完成\n` +
+      `• \`啟動/暫停 Agent名稱\` — 切換 Agent 狀態\n\n` +
+      `**🤖 Agent 任務**\n` +
+      `• \`指派 Agent名稱 任務 任務標題\`\n` +
+      `• \`查看 Agent名稱 任務\`\n` +
+      `• \`執行 Agent名稱\` — 🚀 AI 自動執行所有待處理任務\n` +
+      `• \`結果 Agent名稱\` — 查看 AI 執行結果\n` +
+      `• \`績效 Agent名稱\` — 查看 Agent 績效報告\n\n` +
+      `**⚡ 工作流**\n` +
+      `• \`執行 工作流名稱\` — 觸發工作流\n` +
+      `• \`暫停工作流 名稱\` / \`啟動工作流 名稱\`\n\n` +
+      `💡 配置 LLM API（設定頁面）可啟用智能對話 + AI 自動執行。`,
+    actions: ['專案總覽', '執行 Agent', '績效 Agent']
+  };
+}
+
+// ==================== ACTIVITY LOG SYSTEM ====================
+
+async function logActivity(entityType, entityId, action, details) {
+  // Log to local agent activityLog
+  const logEntry = {
+    time: new Date().toISOString(),
+    type: action.includes('error') || action.includes('fail') ? 'error' : action.includes('warn') ? 'warning' : 'info',
+    message: `[${entityType}] ${action}: ${typeof details === 'string' ? details : JSON.stringify(details)}`
+  };
+
+  // Find relevant agent and append to its activityLog
+  if (entityType === 'agent') {
+    const agent = state.agents.find(a => a.id === entityId);
+    if (agent) {
+      if (!agent.activityLog) agent.activityLog = [];
+      agent.activityLog.unshift(logEntry);
+      if (agent.activityLog.length > 50) agent.activityLog = agent.activityLog.slice(0, 50);
+    }
+  }
+
+  // Write to Supabase activity_logs table
+  if (sb) {
+    try {
+      await sb.from('activity_logs').insert({
+        entity_type: entityType,
+        entity_id: entityId || null,
+        action: action,
+        details: typeof details === 'object' ? details : { message: details },
+        performed_by: 'talk_ui'
+      });
+    } catch (e) {
+      console.warn('[ActivityLog] Cloud write failed:', e);
+    }
+  }
+}
+
+// ==================== AGENT TASK MANAGEMENT ====================
+
+function cmdAssignTask(text) {
+  // Parse: "指派 AgentName 任務 TaskTitle" or "assign AgentName task Title"
+  const match = text.match(/^(?:指派|assign|分配)\s+(.+?)\s+(?:任務|task|做)\s+(.+)/i);
+  if (!match) return null;
+
+  const agentName = match[1].trim();
+  const taskTitle = match[2].trim();
+
+  const agent = state.agents.find(a =>
+    a.name.toLowerCase().includes(agentName.toLowerCase()) ||
+    a.role.toLowerCase().includes(agentName.toLowerCase())
+  );
+  if (!agent) return { reply: `❌ 找不到名稱包含「${agentName}」的 Agent。\n可用：${state.agents.map(a => a.name).join(', ')}` };
+
+  const newTask = {
+    id: crypto.randomUUID(),
+    title: taskTitle,
+    status: 'pending',
+    priority: 'medium',
+    assignedAt: new Date().toISOString()
+  };
+
+  if (!agent.taskQueue) agent.taskQueue = [];
+  agent.taskQueue.push(newTask);
+  saveState();
+
+  // Also write to Supabase agent_tasks
+  if (sb) {
+    sb.from('agent_tasks').insert({
+      agent_id: agent.id,
+      task_type: 'manual',
+      title: taskTitle,
+      status: 'pending',
+      priority: 'medium'
+    }).then(() => {}).catch(e => console.warn('[AgentTask] Cloud insert failed:', e));
+  }
+
+  logActivity('agent', agent.id, 'task_assigned', { taskTitle, agentName: agent.name });
+  handleRoute(window.location.hash);
+
+  return {
+    reply: `✅ 已指派任務給 **${agent.name}**：\n📋 「${taskTitle}」\n\n${agent.name} 目前佇列中有 **${agent.taskQueue.length}** 個任務。`,
+    actions: [`查看 ${agent.name} 任務`]
+  };
+}
+
+function cmdViewAgentTasks(text) {
+  // Parse: "查看 AgentName 任務" or "AgentName tasks"
+  const match = text.match(/^(?:查看|view|show|看)\s+(.+?)(?:\s*(?:的|的任務|任務|tasks))?$/i);
+  if (!match) return null;
+
+  const agentName = match[1].trim();
+  const agent = state.agents.find(a =>
+    a.name.toLowerCase().includes(agentName.toLowerCase()) ||
+    a.role.toLowerCase().includes(agentName.toLowerCase())
+  );
+  if (!agent) return null;
+
+  const tasks = agent.taskQueue || [];
+  if (tasks.length === 0) {
+    return { reply: `📋 **${agent.name}** 目前沒有待辦任務。`, actions: [`指派 ${agent.name} 任務 `] };
+  }
+
+  const statusEmoji = { pending: '⏳', in_progress: '🔄', completed: '✅', failed: '❌', running: '🔄' };
+  const lines = tasks.slice(0, 10).map(t =>
+    `${statusEmoji[t.status] || '⏳'} **${t.title || t.name}** [${t.status}]${t.priority ? ' P:' + t.priority : ''}`
+  );
+
+  return {
+    reply: `📋 **${agent.name}** 的任務佇列（${tasks.length} 項）\n\n${lines.join('\n')}${tasks.length > 10 ? '\n...' : ''}`,
+    actions: [`指派 ${agent.name} 任務 `]
+  };
+}
+
+// ==================== WORKFLOW TRIGGER VIA TALK UI ====================
+
+function cmdWorkflowList() {
+  const wfs = state.workflows || [];
+  if (wfs.length === 0) return { reply: '⚡ 目前沒有工作流。前往 Agent > 工作流管理 建立新工作流。' };
+
+  const lines = wfs.map(w => {
+    const emoji = w.status === 'active' ? '🟢' : '🟡';
+    const stepsStr = (w.steps || []).map(s => s.agent).join(' → ');
+    return `${emoji} **${w.name}** [${w.status}]\n   流程：${stepsStr || '無步驟'}\n   上次執行：${w.lastRun || '從未'}`;
+  });
+
+  return {
+    reply: `⚡ **工作流列表（${wfs.length} 個）**\n\n${lines.join('\n\n')}`,
+    actions: wfs.filter(w => w.status === 'active').slice(0, 3).map(w => `執行 ${w.name}`)
+  };
+}
+
+function cmdTriggerWorkflow(name) {
+  const wf = state.workflows.find(w =>
+    w.name.toLowerCase().includes(name.toLowerCase())
+  );
+  if (!wf) return { reply: `❌ 找不到名稱包含「${name}」的工作流。\n\n可用工作流：${state.workflows.map(w => w.name).join(', ')}` };
+  if (wf.status !== 'active') return { reply: `⚠️ 工作流「${wf.name}」目前是暫停狀態，請先啟動。`, actions: [`啟動工作流 ${wf.name}`] };
+
+  // Simulate workflow execution
+  const steps = wf.steps || [];
+  wf.lastRun = new Date().toISOString().replace('T', ' ').substring(0, 16);
+  if (!wf.runCount) wf.runCount = 0;
+  wf.runCount++;
+  saveState();
+
+  // Log each step
+  const stepLog = steps.map((s, i) => `  ${i + 1}. 🤖 **${s.agent}** → ${s.action} → ${s.output || '完成'}`).join('\n');
+
+  // Create tasks for involved agents
+  steps.forEach(step => {
+    const agent = state.agents.find(a => a.name.toLowerCase().includes(step.agent.toLowerCase()));
+    if (agent) {
+      if (!agent.taskQueue) agent.taskQueue = [];
+      agent.taskQueue.push({
+        id: crypto.randomUUID(),
+        title: `[${wf.name}] ${step.action}`,
+        status: 'in_progress',
+        priority: 'high',
+        assignedAt: new Date().toISOString(),
+        workflowId: wf.id
+      });
+      agent.currentTask = `[${wf.name}] ${step.action}`;
+      agent.status = 'active';
+    }
+  });
+  saveState();
+  handleRoute(window.location.hash);
+
+  logActivity('workflow', wf.id, 'workflow_triggered', { name: wf.name, steps: steps.length, runCount: wf.runCount });
+
+  return {
+    reply: `⚡ **工作流已觸發：${wf.name}**\n\n執行步驟：\n${stepLog}\n\n第 ${wf.runCount} 次執行 | ${steps.length} 個步驟已分派給 Agent`,
+    actions: ['Agent 狀態', '工作流列表']
+  };
+}
+
+function cmdToggleWorkflow(name, targetStatus) {
+  const wf = state.workflows.find(w => w.name.toLowerCase().includes(name.toLowerCase()));
+  if (!wf) return { reply: `❌ 找不到工作流「${name}」。` };
+  wf.status = targetStatus;
+  saveState();
+  handleRoute(window.location.hash);
+  const verb = targetStatus === 'active' ? '啟動' : '暫停';
+  return { reply: `✅ 已${verb}工作流「${wf.name}」` };
+}
+
+// ==================== NOTIFICATION SYSTEM ====================
+
+let notificationQueue = [];
+
+function pushNotification(title, body, type) {
+  const notif = { id: Date.now(), title, body, type: type || 'info', ts: Date.now(), read: false };
+  notificationQueue.push(notif);
+  if (notificationQueue.length > 50) notificationQueue = notificationQueue.slice(-50);
+
+  // Show toast
+  showToast(title + (body ? ': ' + body.substring(0, 60) : ''), type === 'error' ? 'error' : 'success');
+
+  // Update fab badge if panel is closed
+  if (!state.talkPanelOpen) {
+    const fab = document.getElementById('talk-fab');
+    if (fab) fab.classList.add('has-unread');
+  }
+  // Update notification center badge
+  updateNotifBadge();
+  renderNotifList();
+}
+
+// --- Notification Center UI ---
+function toggleNotifPanel() {
+  const panel = document.getElementById('notif-panel');
+  if (!panel) return;
+  const isVisible = panel.classList.contains('visible');
+  panel.classList.toggle('visible', !isVisible);
+  if (!isVisible) renderNotifList();
+}
+
+function updateNotifBadge() {
+  const badge = document.getElementById('notif-badge-count');
+  if (!badge) return;
+  const unread = notificationQueue.filter(n => !n.read).length;
+  badge.textContent = unread > 9 ? '9+' : String(unread);
+  badge.classList.toggle('visible', unread > 0);
+}
+
+function renderNotifList() {
+  const container = document.getElementById('notif-list');
+  if (!container) return;
+  if (notificationQueue.length === 0) {
+    container.innerHTML = '<div class="notif-empty">尚無通知<br><small>操作 Talk AI 或工作流觸發時會產生通知</small></div>';
+    return;
+  }
+  const items = notificationQueue.slice().reverse();
+  container.innerHTML = items.map(n => {
+    const time = new Date(n.ts).toLocaleTimeString('zh-TW', { hour: '2-digit', minute: '2-digit' });
+    return `<div class="notif-item ${n.read ? '' : 'unread'}" onclick="markNotifRead(${n.id})">
+      <div class="notif-dot ${n.type || 'info'}"></div>
+      <div class="notif-content">
+        <div class="notif-title">${n.title}</div>
+        ${n.body ? '<div class="notif-body">' + n.body.substring(0, 80) + '</div>' : ''}
+      </div>
+      <div class="notif-time">${time}</div>
+    </div>`;
+  }).join('');
+}
+
+function markNotifRead(notifId) {
+  const n = notificationQueue.find(x => x.id === notifId);
+  if (n) n.read = true;
+  updateNotifBadge();
+  renderNotifList();
+}
+
+function markAllNotifsRead() {
+  notificationQueue.forEach(n => n.read = true);
+  updateNotifBadge();
+  renderNotifList();
+}
+
+function cmdNotifications() {
+  if (notificationQueue.length === 0) return { reply: '🔔 目前沒有通知。' };
+  const recent = notificationQueue.slice(-10).reverse();
+  const lines = recent.map(n => {
+    const emoji = n.type === 'error' ? '🔴' : n.type === 'warning' ? '🟡' : '🟢';
+    const time = new Date(n.ts).toLocaleTimeString('zh-TW', { hour: '2-digit', minute: '2-digit' });
+    return `${emoji} [${time}] **${n.title}**${n.body ? '\n   ' + n.body : ''}`;
+  });
+  notificationQueue.forEach(n => n.read = true);
+  return { reply: `🔔 **最近通知（${notificationQueue.length} 筆）**\n\n${lines.join('\n\n')}` };
+}
+
+// ==================== RECENT ACTIVITY LOG VIEW ====================
+
+async function cmdRecentActivity() {
+  if (!sb) return { reply: '⚠️ Supabase 未連線，無法查詢活動日誌。' };
+  try {
+    const { data, error } = await sb.from('activity_logs')
+      .select('*')
+      .order('created_at', { ascending: false })
+      .limit(15);
+    if (error) throw error;
+    if (!data || data.length === 0) return { reply: '📝 尚無活動記錄。開始使用 Talk UI 後，所有操作都會被記錄。' };
+
+    const lines = data.map(log => {
+      const time = new Date(log.created_at).toLocaleString('zh-TW', { month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+      const detail = log.details?.message || log.details?.taskTitle || log.details?.name || JSON.stringify(log.details).substring(0, 40);
+      return `• [${time}] **${log.action}** (${log.entity_type}) — ${detail}`;
+    });
+
+    return { reply: `📝 **最近活動記錄（${data.length} 筆）**\n\n${lines.join('\n')}` };
+  } catch (e) {
+    return { reply: '❌ 查詢活動記錄失敗：' + e.message };
+  }
+}
+
+// ==================== LLM API HOOK ====================
+
+async function callLLM(userMessage) {
+  const config = state.llmConfig;
+  if (!config || !config.apiKey) throw new Error('未配置 API Key');
+
+  const provider = (config.provider || '').toLowerCase();
+  const modelName = config.modelName || config.model || '';
+  const apiEndpoint = config.apiEndpoint || config.endpoint || '';
+  const temp = config.temperature || 0.7;
+  const maxTok = config.maxTokens || 1024;
+  const systemPrompt = buildSystemPrompt();
+
+  // Build messages
+  const msgs = [
+    { role: 'system', content: systemPrompt },
+    ...state.chatMessages.filter(m => m.role !== 'system').slice(-10).map(m => ({
+      role: m.role === 'bot' ? 'assistant' : 'user',
+      content: m.text
+    })),
+    { role: 'user', content: userMessage }
+  ];
+
+  let endpoint = '';
+  let headers = {};
+  let body = {};
+
+  if (provider === 'openai' || provider === 'chatgpt') {
+    endpoint = apiEndpoint || 'https://api.openai.com/v1/chat/completions';
+    headers = { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + config.apiKey };
+    body = { model: modelName || 'gpt-4o-mini', messages: msgs, temperature: temp, max_tokens: maxTok };
+  } else if (provider === 'anthropic' || provider === 'claude') {
+    endpoint = apiEndpoint || 'https://api.anthropic.com/v1/messages';
+    headers = { 'Content-Type': 'application/json', 'x-api-key': config.apiKey, 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' };
+    body = { model: modelName || 'claude-sonnet-4-20250514', system: systemPrompt, messages: msgs.filter(m => m.role !== 'system'), max_tokens: maxTok };
+  } else if (provider === 'ollama' || provider === 'local') {
+    endpoint = apiEndpoint || 'http://localhost:11434/api/chat';
+    headers = { 'Content-Type': 'application/json' };
+    body = { model: modelName || 'llama3', messages: msgs, stream: false };
+  } else {
+    // Generic OpenAI-compatible endpoint
+    endpoint = apiEndpoint || 'https://api.openai.com/v1/chat/completions';
+    headers = { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + config.apiKey };
+    body = { model: modelName || 'gpt-4o-mini', messages: msgs, temperature: temp, max_tokens: maxTok };
+  }
+
+  const updateStatus = document.getElementById('talk-status-text');
+  if (updateStatus) updateStatus.textContent = `連線 ${provider} 中...`;
+
+  const resp = await fetch(endpoint, { method: 'POST', headers, body: JSON.stringify(body) });
+  if (!resp.ok) {
+    const err = await resp.text();
+    if (updateStatus) updateStatus.textContent = '本地指令模式';
+    throw new Error(`${resp.status}: ${err.substring(0, 200)}`);
+  }
+
+  const data = await resp.json();
+  if (updateStatus) updateStatus.textContent = `${provider} 已連線`;
+
+  // Extract reply based on provider format
+  if (provider === 'anthropic' || provider === 'claude') {
+    return (data.content && data.content[0] && data.content[0].text) || '(empty response)';
+  } else if (provider === 'ollama' || provider === 'local') {
+    return (data.message && data.message.content) || '(empty response)';
+  } else {
+    return (data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content) || '(empty response)';
+  }
+}
+
+function buildSystemPrompt() {
+  const projSummary = state.projects.map(p => `${p.code} ${p.name}: ${p.progress}%`).join('; ');
+  const agentSummary = state.agents.map(a => `${a.name}(${a.role}): ${a.status}`).join('; ');
+  return `你是 DTO Dashboard 的 AI 助手。你在一個數位轉型辦公室的儀表板中運作。
+當前專案：${projSummary}
+當前 Agent：${agentSummary}
+總行動項目：${state.projects.reduce((s, p) => s + (p.actions || []).length, 0)} 項
+請用繁體中文簡潔回答。如果使用者要求更新數據（如進度），告訴他們使用具體指令格式，例如「更新 P3 進度到 50%」。`;
+}
+
+    // ==================== AGENT AUTO-EXECUTION ENGINE ====================
+
+    /**
+     * Execute a task using the Agent's LLM config (or fall back to global LLM config).
+     * This is the core AI-powered execution: the Agent reads the task, generates a response,
+     * and stores the result. The task status transitions: pending → in_progress → completed.
+     */
+    async function executeAgentTask(agentId, taskId) {
+      const agent = state.agents.find(a => a.id === agentId);
+      if (!agent) { showToast('Agent 不存在', 'error'); return; }
+      const task = (agent.taskQueue || []).find(t => t.id === taskId);
+      if (!task) { showToast('任務不存在', 'error'); return; }
+      if (task._executing) { showToast('任務正在執行中', 'warning'); return; }
+
+      // Determine LLM config: agent-level > global
+      const agentCfg = agent.llmConfig || {};
+      const globalCfg = state.llmConfig || {};
+      const prov = (agentCfg.provider && agentCfg.provider.toLowerCase() !== 'none') ? agentCfg : globalCfg;
+      const provName = (prov.provider || '').toLowerCase();
+      if (!provName || provName === 'none') {
+        showToast('請先在設定頁配置 LLM', 'warning');
+        return;
+      }
+
+      // Mark task as executing
+      task._executing = true;
+      task.status = 'in_progress';
+      task.startedAt = new Date().toISOString();
+      agent.currentTask = task.title;
+      agent.status = 'active';
+      saveState();
+      handleRoute(window.location.hash);
+
+      // Build execution prompt
+      const projContext = (agent.assignedProjects || []).map(pid => {
+        const p = state.projects.find(pr => pr.id === pid);
+        if (!p) return '';
+        const items = (p.actionItems || []).map(a => `  - ${a.name} (${a.status}, ${a.priority})`).join('\n');
+        return `專案 ${p.code} ${p.name} (進度: ${p.progress}%):\n${items}`;
+      }).filter(Boolean).join('\n\n');
+
+      const agentPrompt = `你是 AI Agent「${agent.name}」，角色是「${agent.role}」。
+${agent.description ? '職責描述：' + agent.description : ''}
+
+你負責的專案資訊：
+${projContext || '（無指定專案）'}
+
+現在請執行以下任務：
+**${task.title}**
+${task.description || ''}
+
+請提供具體、可執行的分析結果或行動建議。使用繁體中文。結構化回覆，包含：
+1. 任務分析
+2. 執行結果或建議
+3. 後續行動項目（如有）`;
+
+      const startTime = Date.now();
+
+      try {
+        // Temporarily use agent's LLM config for the call
+        const originalConfig = { ...state.llmConfig };
+        if (agentCfg.provider && agentCfg.provider.toLowerCase() !== 'none') {
+          state.llmConfig = {
+            provider: agentCfg.provider,
+            apiKey: agentCfg.apiKey || globalCfg.apiKey,
+            apiEndpoint: agentCfg.apiEndpoint || agentCfg.endpoint || globalCfg.apiEndpoint || globalCfg.endpoint || '',
+            modelName: agentCfg.model || agentCfg.modelName || globalCfg.modelName || '',
+            temperature: agentCfg.temperature || 0.7,
+            maxTokens: globalCfg.maxTokens || 2000
+          };
+        }
+
+        const result = await callLLM(agentPrompt);
+
+        // Restore global config
+        state.llmConfig = originalConfig;
+
+        const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
+
+        // Save result
+        task.result = result;
+        task.completedAt = new Date().toISOString();
+        task.executionTime = elapsed + 's';
+        task.status = 'completed';
+        task._executing = false;
+        agent.currentTask = '';
+
+        // Update metrics
+        if (!agent.metrics) agent.metrics = {};
+        agent.metrics.tasksCompleted = (agent.metrics.tasksCompleted || 0) + 1;
+        agent.metrics.avgResponseTime = elapsed + 's';
+        const totalTasks = agent.taskQueue.length || 1;
+        const completedTasks = agent.taskQueue.filter(t => t.status === 'completed').length;
+        agent.metrics.reliability = Math.round((completedTasks / totalTasks) * 100);
+
+        // Log activity
+        logActivity('agent', agentId, 'task_completed', {
+          taskTitle: task.title, result: result.substring(0, 200), executionTime: elapsed + 's'
+        });
+        pushNotification('任務完成', `${agent.emoji} ${agent.name} 完成了「${task.title}」(${elapsed}s)`, 'success');
+
+        // Write to Supabase agent_tasks
+        if (sb) {
+          try {
+            await sb.from('agent_tasks').upsert({
+              id: task.id, agent_id: agentId, title: task.title,
+              status: 'completed', priority: task.priority,
+              result: result.substring(0, 5000),
+              completed_at: task.completedAt
+            }, { onConflict: 'id' });
+          } catch (e) { console.warn('agent_tasks upsert error:', e); }
+        }
+
+        saveState();
+        handleRoute(window.location.hash);
+        showToast(`✅ ${agent.name} 完成任務 (${elapsed}s)`, 'success');
+
+      } catch (err) {
+        // Restore global config on error too
+        task._executing = false;
+        task.status = 'pending';
+        task.error = err.message;
+        agent.currentTask = '';
+        saveState();
+        handleRoute(window.location.hash);
+        logActivity('agent', agentId, 'task_failed', { taskTitle: task.title, error: err.message });
+        pushNotification('任務失敗', `${agent.emoji} ${agent.name}: ${err.message.substring(0, 80)}`, 'error');
+        showToast('❌ 執行失敗: ' + err.message.substring(0, 100), 'error');
+      }
+    }
+
+    /**
+     * Show the full AI execution result in a modal
+     */
+    function showTaskResult(agentId, taskId) {
+      const agent = state.agents.find(a => a.id === agentId);
+      if (!agent) return;
+      const task = (agent.taskQueue || []).find(t => t.id === taskId);
+      if (!task || !task.result) return;
+
+      const formatted = task.result
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\n/g, '<br>');
+
+      showModal(`📄 ${agent.emoji} ${agent.name} — ${task.title}`, `
+        <div style="max-height:500px;overflow-y:auto;">
+          <div style="display:flex;gap:16px;margin-bottom:12px;font-size:12px;color:var(--text-secondary);">
+            <span>⏱️ 執行時間: ${task.executionTime || '—'}</span>
+            <span>📅 完成: ${task.completedAt ? new Date(task.completedAt).toLocaleString('zh-TW') : '—'}</span>
+          </div>
+          <div style="padding:12px;background:var(--bg-secondary);border-radius:8px;font-size:13px;line-height:1.7;">
+            ${formatted}
+          </div>
+        </div>
+        <div style="margin-top:12px;display:flex;gap:8px;">
+          <button class="btn btn-secondary" onclick="copyTaskResult('${agentId}','${taskId}')">📋 複製結果</button>
+          <button class="btn btn-secondary" onclick="rerunAgentTask('${agentId}','${taskId}')">🔄 重新執行</button>
+        </div>
+      `, { width: '600px' });
+    }
+
+    function copyTaskResult(agentId, taskId) {
+      const agent = state.agents.find(a => a.id === agentId);
+      const task = agent?.taskQueue?.find(t => t.id === taskId);
+      if (task?.result) {
+        navigator.clipboard.writeText(task.result).then(() => showToast('已複製到剪貼簿'));
+      }
+    }
+
+    function rerunAgentTask(agentId, taskId) {
+      const agent = state.agents.find(a => a.id === agentId);
+      const task = agent?.taskQueue?.find(t => t.id === taskId);
+      if (task) {
+        task.status = 'pending';
+        task.result = '';
+        task.error = '';
+        closeModal();
+        saveState();
+        executeAgentTask(agentId, taskId);
+      }
+    }
+
+    /**
+     * Execute ALL pending tasks for an agent sequentially
+     */
+    async function executeAllAgentTasks(agentId) {
+      const agent = state.agents.find(a => a.id === agentId);
+      if (!agent) return;
+      const pending = (agent.taskQueue || []).filter(t => t.status === 'pending' || t.status === 'in_progress');
+      if (pending.length === 0) { showToast('沒有待執行的任務', 'info'); return; }
+      showToast(`開始執行 ${pending.length} 項任務...`, 'info');
+      for (const task of pending) {
+        await executeAgentTask(agentId, task.id);
+      }
+      showToast(`${agent.name} 完成所有任務`, 'success');
+    }
+
+    // ==================== SUPABASE REAL-TIME SYNC ====================
+    let realtimeChannel = null;
+
+    function initRealtimeSync() {
+      if (!sb) return;
+      try {
+        realtimeChannel = sb.channel('dto-realtime')
+          .on('postgres_changes', { event: '*', schema: 'public', table: 'projects' }, (payload) => {
+            console.log('[Realtime] projects change:', payload.eventType);
+            handleRealtimeProjectChange(payload);
+          })
+          .on('postgres_changes', { event: '*', schema: 'public', table: 'agents' }, (payload) => {
+            console.log('[Realtime] agents change:', payload.eventType);
+            handleRealtimeAgentChange(payload);
+          })
+          .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'activity_logs' }, (payload) => {
+            console.log('[Realtime] new activity_log');
+            handleRealtimeActivityInsert(payload);
+          })
+          .subscribe((status) => {
+            console.log('[Realtime] subscription status:', status);
+          });
+      } catch (e) {
+        console.warn('[Realtime] failed to init:', e.message);
+      }
+    }
+
+    function handleRealtimeProjectChange(payload) {
+      if (payload.eventType === 'UPDATE' && payload.new) {
+        const idx = state.projects.findIndex(p => p.id === payload.new.id);
+        if (idx !== -1) {
+          // Only update if data is newer (avoid echo of our own writes)
+          const incoming = payload.new;
+          const local = state.projects[idx];
+          if (incoming.updated_at && local.updatedAt && incoming.updated_at > local.updatedAt) {
+            state.projects[idx] = dbProjectToFE(incoming);
+            localStorage.setItem('dto_state', JSON.stringify(state));
+            pushNotification('同步更新', `專案 ${incoming.code || incoming.name} 已從雲端同步`, 'info');
+            handleRoute(window.location.hash);
+          }
+        }
+      }
+    }
+
+    function handleRealtimeAgentChange(payload) {
+      if (payload.eventType === 'UPDATE' && payload.new) {
+        const idx = state.agents.findIndex(a => a.id === payload.new.id);
+        if (idx !== -1) {
+          const incoming = payload.new;
+          const local = state.agents[idx];
+          if (incoming.updated_at && local.updatedAt && incoming.updated_at > local.updatedAt) {
+            state.agents[idx] = dbAgentToFE(incoming);
+            localStorage.setItem('dto_state', JSON.stringify(state));
+            handleRoute(window.location.hash);
+          }
+        }
+      }
+    }
+
+    function handleRealtimeActivityInsert(payload) {
+      if (payload.new) {
+        const log = payload.new;
+        const detail = log.details?.message || log.action || '';
+        // Only notify if not from our current session (avoid echo)
+        const age = Date.now() - new Date(log.created_at).getTime();
+        if (age > 3000) { // older than 3s means from another tab/user
+          pushNotification('新活動', `${log.entity_type}: ${log.action} — ${detail.substring(0, 50)}`, 'info');
+        }
+      }
+    }
+
     // ==================== INITIALIZATION ====================
-    document.addEventListener('DOMContentLoaded', () => {
-      loadState();
+    document.addEventListener('DOMContentLoaded', async () => {
+      const cloudOk = await loadFromCloud();
+      if (!cloudOk) loadState();
       initTheme();
       if (state.sidebarCollapsed) {
         document.body.classList.add('sidebar-collapsed');
       }
       handleRoute();
+      // Start real-time sync
+      initRealtimeSync();
+      // Close notif panel on outside click
+      document.addEventListener('click', (e) => {
+        const panel = document.getElementById('notif-panel');
+        const bell = document.getElementById('notif-bell');
+        if (panel && panel.classList.contains('visible') && !panel.contains(e.target) && !bell.contains(e.target)) {
+          panel.classList.remove('visible');
+        }
+      });
     });
   </script>
 </body>
